@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Studentfy</string>
+    <string name="title_item_detail">Stavka detalji</string>
+    <string name="action_favs">Moje zabeleženo</string>
+    <string name="action_settings">Podešavanja</string>
+    <string name="action_about">Info o Studentfy</string>
+    <string name="strTitlePodesavanja">Podešavanja</string>
+</resources>

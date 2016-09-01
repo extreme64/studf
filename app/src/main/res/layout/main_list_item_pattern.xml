@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/mlipattern"  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#F7F7EB"
+    android:padding="8dp" >
+
+    <ImageView
+        android:id="@+id/ivIco"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_action"
+        android:layout_alignParentLeft="true"
+        />
+    <LinearLayout android:id="@+id/TextBox"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_alignParentRight="false"
+        android:layout_marginStart="48dp">
+        <TextView
+            android:id="@+id/tvTitle"
+            android:text="Kolokvijum Strategijski menadzment. Sala 12."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#555"
+            android:textSize="16dip"
+            />
+        <TextView
+            android:id="@+id/tvDate"
+            android:text="11/8/2015 @ 10h"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dip"
+            android:textColor="#BB7711"
+            android:textStyle="bold"
+            android:paddingTop="10dip"
+            android:paddingStart="20dip"
+            />
+
+
+        <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="FavIt"
+            android:id="@+id/imgButton"
+            android:layout_gravity="right"
+            android:clickable="true"
+            android:focusable="false"
+            android:src="@drawable/ic_action_favit"
+            android:onClick="mainList_favIt"
+             />
+    </LinearLayout>
+</RelativeLayout>

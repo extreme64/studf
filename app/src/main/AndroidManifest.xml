@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mastermind.praktikumandroid" >
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/spraktikum_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/MyAppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainItemDetailActivity"
+            android:label="@string/title_item_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/strTitlePodesavanja"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+
+
+        <service
+            android:name="com.example.mastermind.praktikumandroid.CheckServerService"
+            android:enabled="true"
+            android:exported="false"
+            android:icon="@drawable/ic_action_sercheck"
+            android:label="Studentfy update content"
+            android:process=":lqRemote"  >
+
+            <intent-filter>
+                <action android:name="com.example.mastermind.praktikumandroid.CheckServerService" />
+            </intent-filter>
+        </service>
+    </application>
+
+
+
+
+</manifest>

@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.example.mastermind.praktikumandroid"
+        minSdkVersion 19
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:support-v4:22.2.1'
+
+    compile 'com.squareup.haha:haha:2.0.3'
+    compile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+
+    testCompile 'junit:junit:4.12'
+
+    compile files('libs/ical4j-1.0.5.jar')
+
+    compile files('libs/apache-commons-lang.jar')
+    compile files('libs/slf4j-api-1.6.1.jar')
+    compile files('libs/slf4j-nop-1.6.1.jar')
+    compile files('libs/apache-commons-codec-1.4.jar')
+
+    compile files('libs/org-apache-commons-logging.jar')
+    compile files('libs/com.springsource.edu.emory.mathcs.backport_3.1.0.jar')
+
+
+}
