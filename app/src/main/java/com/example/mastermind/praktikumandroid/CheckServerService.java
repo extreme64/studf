@@ -31,13 +31,13 @@ public class CheckServerService extends IntentService {
     SQLiteDatabase lDB;
     int diffFeed_DB;
 
-    List<RssEntry> obavestenjaITEMS_service = new ArrayList<RssEntry>();
-    List<RssEntry> najaveITEMS_service = new ArrayList<RssEntry>();
-    List<CalEntry> kalendarITEMS_service = new ArrayList<CalEntry>();
+    List<NotfTest> obavestenjaITEMS_service = new ArrayList<NotfTest>();
+    List<NotfTest> najaveITEMS_service = new ArrayList<NotfTest>();
+    List<NotfTest> kalendarITEMS_service = new ArrayList<NotfTest>();
 
-    List<RssEntry> rss_obavestenjaITEMS_service = new ArrayList<RssEntry>();
-    List<RssEntry> rss_najaveITEMS_service = new ArrayList<RssEntry>();
-    List<CalEntry> rss_kalendarITEMS_service = new ArrayList<CalEntry>();
+    List<NotfTest> rss_obavestenjaITEMS_service = new ArrayList<NotfTest>();
+    List<NotfTest> rss_najaveITEMS_service = new ArrayList<NotfTest>();
+    List<NotfTest> rss_kalendarITEMS_service = new ArrayList<NotfTest>();
 
     int check_interval_factor = 20; //10 x 1000 mils
     String [] rss_s = {"http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml",
@@ -76,8 +76,8 @@ public class CheckServerService extends IntentService {
                 }
             }
         }
-//TODO fix
-       /* if(lDB != null)
+
+       if(lDB != null)
         {
             //iz tabela u bazi popuni liste za sve tabove
             Cursor c;
@@ -111,7 +111,7 @@ public class CheckServerService extends IntentService {
                     kalendarITEMS_service.add(item);
                 }
             }
-        }*/
+        }
 
 
         //uzmi linkove i povuci sa fidova stavke
@@ -126,18 +126,17 @@ public class CheckServerService extends IntentService {
             rssReader.setHandler(RssReader.GENERIC_HANDLER);
             rss_najaveITEMS_service = rssReader.getRssItems(); // ako feed dostupan, citamo sa njega
 
-//TODO fix
-           /* rssReader = new RssReader(rss_s[2]);
+
+            rssReader = new RssReader(rss_s[2]);
             rssReader.setHandler(RssReader.GOOGLEcal_HANDLER);
-            rss_kalendarITEMS_service = rssReader.getRssItems(); // ako feed dostupan, citamo sa njega */
+            rss_kalendarITEMS_service = rssReader.getRssItems(); // ako feed dostupan, citamo sa njega
 
         }
         catch (Exception e)  { Log.e("ITCRssReader", e.getMessage()); }
 
 
-//TODO fix
         //uporedi liste, ako ima novih, izbroj razliku
-      /*  boolean foundfirstHit = false;
+       boolean foundfirstHit = false;
         int notHit=0;
         int loopDone=0;
 
@@ -195,7 +194,7 @@ public class CheckServerService extends IntentService {
 
         helpNotBuilder("Obave. "+ notHit +" / Najav. "+ notHit1 +" / Kalen. "+ notHit2, notHit + notHit1 + notHit2);
 
-*/
+
 
 
         //this.stopSelf();
