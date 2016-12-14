@@ -1,4 +1,4 @@
-package com.example.mastermind.praktikumandroid.dummy;
+package com.example.mastermind.praktikumandroid;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ import android.util.SparseArray;
  */
 // Since this is an object collection, use a FragmentStatePagerAdapter,
 // and NOT a FragmentPagerAdapter.
-public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter
+public class CollectionPagerAdapter extends FragmentStatePagerAdapter
 {
 
     public FragmentManager mFragmentManager;
@@ -31,7 +31,7 @@ public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter
     public final SparseArray<android.support.v4.app.Fragment> mPageReferences = new SparseArray<android.support.v4.app.Fragment>();
 
 
-    public DemoCollectionPagerAdapter(FragmentManager fm) {
+    public CollectionPagerAdapter(FragmentManager fm) {
         super(fm);
         mFragmentManager = fm;
         //mFragmentTags = new HashMap<Integer, String>();

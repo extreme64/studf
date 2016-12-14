@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Studentfy</string>
+    <string name="app_name">Diplomski</string>
     <string name="title_item_detail">Stavka detalji</string>
     <string name="action_favs">Moje zabeleženo</string>
     <string name="action_settings">Podešavanja</string>

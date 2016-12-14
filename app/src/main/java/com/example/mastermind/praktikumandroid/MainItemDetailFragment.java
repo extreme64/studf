@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.mastermind.praktikumandroid.ical.CalEntry;
-import com.example.mastermind.praktikumandroid.rss.RssEntry;
 
 
 /**
@@ -25,7 +21,7 @@ public class MainItemDetailFragment extends Fragment {
 
     public static final String ARG_ITEM_ID = "item_id"; // The fragment argument representing the item ID that this fragment represents.
 
-    private Entry mItem;
+    private FeedEntry mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,27 +39,20 @@ public class MainItemDetailFragment extends Fragment {
             String s = getArguments().getString(ARG_ITEM_ID);
             int idItem = Integer.parseInt(s);
             int tabSelected =  args.getInt("tabSelected");
-            RssEntry re;
-            CalEntry ce;
+            FeedEntry item;
             switch (tabSelected)
             {
                 case 0:
                     mItem = MainFragment.obavestenjaITEMS.get(idItem);
-                    re = (RssEntry) mItem;
-                    re.fromTab = ""+tabSelected;
-                    mItem = re;
+                    mItem.fromTab = ""+tabSelected;
                     break;
                 case 1:
                     mItem = MainFragment.najaveITEMS.get(idItem);
-                    re = (RssEntry) mItem;
-                    re.fromTab = ""+tabSelected;
-                    mItem = re;
+                    mItem.fromTab = ""+tabSelected;
                     break;
                 case 2:
                     mItem = MainFragment.kalendarITEMS.get(idItem);
-                    ce = (CalEntry) mItem;
-                    ce.fromTab = ""+tabSelected;
-                    mItem = ce;
+                    mItem.fromTab = ""+tabSelected;
                     break;
                 case 3:
                     mItem = MainFragment.favsLocal_DB_ITEMS.get(idItem);
@@ -79,31 +68,67 @@ public class MainItemDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_item_detail, container, false);
 
         // Show the content as text in a TextView.
-        //TODO fix: srediti pumpanje Ui u detaljnom prikazu
-       /* if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_title)).setText("" + mItem.title);
-            ((TextView) rootView.findViewById(R.id.item_link)).setText("" + mItem.url);
-            TextView mainTV = (TextView) rootView.findViewById(R.id.item_detail);
-            mainTV.setText("" + mItem.desc  + " \n " + mItem.content + "\n"
-                    + "Kategotrija - " + mItem.category + "\n"
-                     + "\n" + "od " + mItem.creator  );
-            if(mItem.email!=null)
-                mainTV.append(" @ " +mItem.email );
+       if (mItem != null) {
+           TextView titleTV = ((TextView) rootView.findViewById(R.id.item_title));
+           //((TextView) rootView.findViewById(R.id.item_link)).setText("" + mItem.url);
+           TextView mainTV = (TextView) rootView.findViewById(R.id.item_detail);
+           ImageButton imGoWww = (ImageButton)rootView.findViewById(R.id.go_www);
+           //Button b = (Button)rootView.findViewById(R.id.item_link);
 
-            mainTV.append("\r\n");
+           switch (mItem.getFlag())
+           {
+               case FeedEntry.RSS:
 
-            if(mItem.date!=null)
-                mainTV.append("\n/originalno: " + mItem.date);
-            if(mItem.dateUpdate!=null)
-                mainTV.append("\n/azurirano: " + mItem.dateUpdate);
+                   titleTV.setText("" + mItem.title);
+                   mainTV.setText("" + mItem.desc  + " \n " + mItem.content + "\n"
+                           + "Kategotrija - " + mItem.category + "\n"
+                           + "\n" + "od " + mItem.creator  );
+                   if(mItem.email!=null)
+                       mainTV.append(" @ " +mItem.email );
 
-            Button b = (Button)rootView.findViewById(R.id.item_link);
-            // setovano za koriscebnje pri URI intent lansiranju,
-            // pokrece pretrazivac i ucitava link povezan sa stavkom(item)
-            b.setTag(mItem);
+                   mainTV.append("\r\n");
 
-            ImageButton imGoWww = (ImageButton)rootView.findViewById(R.id.go_www);
-            imGoWww.setTag(mItem);
+                   if(mItem.date!=null)
+                       mainTV.append("\n/originalno: " + mItem.date);
+                   if(mItem.dateUpdate!=null)
+                       mainTV.append("\n/azurirano: " + mItem.dateUpdate);
+
+                   // setovano za koriscebnje pri URI intent lansiranju,
+                   // pokrece pretrazivac i ucitava link povezan sa stavkom(item)
+                   //b.setTag(mItem);
+
+                   imGoWww.setTag(mItem);
+
+                   break;
+
+
+               case FeedEntry.ICAL:
+                   mainTV.setText("" + mItem.summary + "\n" );
+
+                   if(mItem.description!=null)
+
+                   titleTV.setText("" + mItem.summary);
+                        mainTV.append(mItem.description);
+
+                   mainTV.append( " \n\n"
+                           + "Start: " + mItem.dtstart + "\n"
+                           + "Kraj: " + mItem.dtend + "\n"
+                           + "\n" + " "  );
+
+                   mainTV.append("\r\n");
+
+                   if(mItem.firstcreated!=null)
+                       mainTV.append("\n/originalno: " + mItem.firstcreated);
+                   if(mItem.lastmodified!=null)
+                       mainTV.append("\n\n/azurirano: " + mItem.lastmodified);
+
+                   imGoWww.setVisibility(View.INVISIBLE);
+                   imGoWww.setEnabled(false);
+
+                   break;
+
+           }
+
 
             ImageButton ibtnAddFav = (ImageButton)rootView.findViewById(R.id.onClk_addFav);
             ibtnAddFav.setTag(mItem);
@@ -116,7 +141,7 @@ public class MainItemDetailFragment extends Fragment {
             ibtnRmvFav.setEnabled(false);
             ibtnRmvFav.setClickable(false);
             if( MainFragment.favsLocal_DB_ITEMS.size()>0) {
-                for (NotfTest notItem : MainFragment.favsLocal_DB_ITEMS) {
+                for (FeedEntry notItem : MainFragment.favsLocal_DB_ITEMS) {
                     if (notItem.rssItemId.equals(mItem.rssItemId)) {
                         ibtnAddFav.setEnabled(false);
                         ibtnAddFav.setClickable(false);
@@ -129,7 +154,7 @@ public class MainItemDetailFragment extends Fragment {
 
             TextView tw = (TextView)rootView.findViewById(R.id.item_detail);
             tw.setClickable(true);
-        }*/
+        }
 
         return rootView;
     }

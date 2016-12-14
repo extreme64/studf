@@ -7,13 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import java.net.URL;
 
 
 /**
@@ -79,7 +76,7 @@ public class MainItemDetailActivity extends FragmentActivity {
      */
     public void item_goto_url(View v)
     {
-        String url=((NotfTest)v.getTag()).url;
+        String url=((FeedEntry)v.getTag()).url;
         if (!url.startsWith("https://") && !url.startsWith("http://"))
             url = "http://" + url;
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
@@ -89,7 +86,7 @@ public class MainItemDetailActivity extends FragmentActivity {
     public void onClk_addFav_dtlFrag(View v)
     {
         Cursor cur;
-        NotfTest item = (NotfTest)v.getTag();
+        FeedEntry item = (FeedEntry)v.getTag();
 
 
         cur = lDB.rawQuery("SELECT `rssItemId` FROM favs WHERE `rssItemId`='" + item.rssItemId + "' ;", null);
@@ -105,7 +102,7 @@ public class MainItemDetailActivity extends FragmentActivity {
     public void onClk_removeFav_dtlFrag(View v)
     {
 
-        NotfTest item = (NotfTest)v.getTag();
+        FeedEntry item = (FeedEntry)v.getTag();
         String[] arg = { item.rssItemId };
         if(lDB==null)
             lDB = MainActivity.DB;

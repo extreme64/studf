@@ -41,14 +41,14 @@
                 android:layout_height="48dp" />
 
 
-            <Button
+           <!-- <Button
                 android:onClick="item_goto_url"
                 android:id="@+id/item_link"
                 android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:textSize="8dp"
-                android:text="Link" />
+                android:text="Link" /> -->
 
             </LinearLayout>
 

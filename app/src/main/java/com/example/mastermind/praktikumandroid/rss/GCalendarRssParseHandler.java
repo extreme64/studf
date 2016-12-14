@@ -1,6 +1,6 @@
 package com.example.mastermind.praktikumandroid.rss;
 
-import com.example.mastermind.praktikumandroid.NotfTest;
+import com.example.mastermind.praktikumandroid.FeedEntry;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -16,10 +16,10 @@ import java.util.List;
  */
 public class GCalendarRssParseHandler extends DefaultHandler{
     // List of items parsed
-    private List<NotfTest> rssItems;
+    private List<FeedEntry> rssItems;
     // We have a local reference to an object which is constructed while parser is working on an item tag
     // Used to reference item while parsing
-    private NotfTest currentItem;
+    private FeedEntry currentItem;
     // We have two indicators which are used to differentiate whether a tag title or link is being processed by the parser
 
     private int br = 0;
@@ -67,7 +67,7 @@ public class GCalendarRssParseHandler extends DefaultHandler{
     }
 
     // We have an access method which returns a list of items that are read from the RSS feed. This method will be called when parsing is done.
-    public List<NotfTest> getItems() {
+    public List<FeedEntry> getItems() {
         return rssItems;
     }
 
@@ -84,7 +84,9 @@ public class GCalendarRssParseHandler extends DefaultHandler{
 
         if(proceedToParsing) { // no feed staff no more, parse rest
             if ("entry".equals(qName)) {
-                currentItem = new NotfTest(String.valueOf(br), "titleDef", "descDef", "urlStringDef");
+                //currentItem =  new FeedEntry(String.valueOf(br), "titleDef", "descDef", "urlStringDef");currentItem = new FeedEntry();
+                currentItem =  new FeedEntry();
+                currentItem.setEntryFromRss(String.valueOf(br), "titleDef", "descDef", "urlStringDef");
                 br++;
             } else if ("id".equalsIgnoreCase(qName))
                 parsingGuid = true;
