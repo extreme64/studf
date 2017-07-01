@@ -9,14 +9,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
+import com.example.mastermind.praktikumandroid.conn.GetConnSSL;
+import com.example.mastermind.praktikumandroid.conn.GetFromURL;
+import com.example.mastermind.praktikumandroid.conn.PostConnSSL;
+
+import java.net.URL;
 
 
 public class MainActivity extends FragmentActivity
@@ -29,10 +37,15 @@ public class MainActivity extends FragmentActivity
     public Toast toast;
     ListView listView;
 
-    String [] tabNames = { "Obaveštenja", "Najave", "Kalendar", "Sačuvano"};
 
+    /* brojs tranica aplikacije, tj. CollectionPagerAdapter-a */
+    protected static final int PAGE_NUMER=5;
+    // ime tab za svaku od sranica adaptera 'CollectionPagerAdapter'
+    String [] tabNames = { "Obaveštenja", "Najave", "Kalendar", "Sačuvano", "Rezultati"};
     CollectionPagerAdapter mCollectionPagerAdapter;
     ViewPager mViewPager;
+
+
     public static SQLiteDatabase DB;
     public static final int NUM_ITEMS_IN_DB = 4;
 
@@ -52,16 +65,29 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_item_list);
 
 
-        mCollectionPagerAdapter =
-                new CollectionPagerAdapter(
-                        getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mCollectionPagerAdapter);
-
-        /** toolbar actionbar tab */
+        /** toolbar actionbar tab
+         * tabovi za selekciju stranice viewpager-a
+         * */
         final ActionBar abar = this.getActionBar();
         abar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         abar.setHomeButtonEnabled(true);
+        /** da bi smo mogli kontrolisati LAYOUT za actionbar */
+        abar.setDisplayShowCustomEnabled(true);
+
+        View abarCustomView = LayoutInflater.from(this).inflate(R.layout.actionbar, null);
+        ActionBar.LayoutParams actB_lpars = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+        abar.setCustomView(abarCustomView,actB_lpars);
+
+
+
+        mCollectionPagerAdapter =
+                new CollectionPagerAdapter(
+                        getSupportFragmentManager());
+        mCollectionPagerAdapter.setNUM_PAGES(PAGE_NUMER); // adapter radi sa ovoliko stranica tj. fragmenta !!!!!!
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mCollectionPagerAdapter);
+
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -80,14 +106,11 @@ public class MainActivity extends FragmentActivity
                 {
                     case 0:
                         if (findViewById(R.id.item_detail_container) != null) {
-                            // The detail container view will be present only in the
-                            // large-screen layouts (res/values-large and
-                            // res/values-sw600dp). If this view is present, then the
-                            // activity should be in two-pane mode.
+                            // The detail container view will be present only in the large-screen layouts (res/values-large and
+                            // res/values-sw600dp). If this view is present, then the activity should be in two-pane mode.
                             mTwoPane = true;
 
-                            // In two-pane mode, list items should be given the
-                            // 'activated' state when touched.
+                            // In two-pane mode, list items should be given the 'activated' state when touched.
                             ((MainFragment) getSupportFragmentManager()
                                     .findFragmentById(R.id.item_list))
                                     .setActivateOnItemClick(true);
@@ -109,9 +132,12 @@ public class MainActivity extends FragmentActivity
         };
 
         // fill a.Bar with tabs
-            for (int i = 0; i < tabNames.length; i++)
-                abar.addTab( abar.newTab().setText(tabNames[i]).setTabListener(tabListener));
-        //####  #######  ####  ######
+        for (int i = 0; i < tabNames.length; i++)
+            abar.addTab( abar.newTab().setText(tabNames[i]).setTabListener(tabListener));
+
+
+
+
 
         //ako treba da se vratimo
         // da bi znali gde
@@ -177,6 +203,23 @@ public class MainActivity extends FragmentActivity
             }
         }
 
+        // GetConnSSL testConn = new GetConnSSL(this);
+        PostConnSSL testConn = new PostConnSSL(this);
+         testConn.execute();
+
+        //GetFromURL conn_noSSL = new GetFromURL("http://www.ict.edu.rs");
+        //System.out.println("RES on YRL stat:" + conn_noSSL.getResponse("http://www.ict.edu.rs"));
+
+
+        System.out.println(" ////////////////////// //////////////////////////////////////////////////////////// ");
+        //GetFromURL conn_noSSL = new GetFromURL("http://www.ict.edu.rs");
+        //conn_noSSL.test();
+
+       // new GetFromURL("http://www.ict.edu.rs").execute();
+
+        /** konekcija za logovanje ne SSl,...
+         * dohvatiti rezultati URL
+         * naci mesto gde cemo parsirati link */
 
     }
 

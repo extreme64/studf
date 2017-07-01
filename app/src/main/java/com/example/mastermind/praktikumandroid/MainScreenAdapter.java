@@ -178,6 +178,22 @@ public class MainScreenAdapter extends ArrayAdapter<FeedEntry> {
                 item.fromTab = "3";
 
                 break;
+            case 4:
+                ico.setImageResource(iconsForTabs[1]);
+                if (MainFragment.favsLocal_DB_ITEMS.size() > 0) {
+                    for (FeedEntry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
+
+                        if (((FeedEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
+                            // imgButton.setClickable(false);
+                            imgButton.setEnabled(false);
+                            break;
+                        }else{
+                            imgButton.setEnabled(true);
+                            imgButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+                break;
         }
 
         imgButton.setTag(item);

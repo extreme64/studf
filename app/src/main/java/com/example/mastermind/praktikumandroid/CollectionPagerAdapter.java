@@ -27,7 +27,10 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
 {
 
     public FragmentManager mFragmentManager;
-    static final int NUM_ITEMS = 4;
+
+    /** definise sa koliko ce stranica tj. fragmenta adapter da radi,
+     * setovati pri inicijalizaciji */
+    private int NUM_ITEMS;
     public final SparseArray<android.support.v4.app.Fragment> mPageReferences = new SparseArray<android.support.v4.app.Fragment>();
 
 
@@ -37,6 +40,10 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
         //mFragmentTags = new HashMap<Integer, String>();
     }
 
+    public int getNUM_PAGES() { return this.getCount(); }
+    public void setNUM_PAGES(int num_pages) {
+        this.NUM_ITEMS = num_pages;
+    }
 
     @Override
     public android.support.v4.app.Fragment getItem(int i) {
@@ -46,6 +53,10 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
 
     }
 
+    /** automatski se poziva i odredjuje broj stranica,
+     * prepisano iz klase PagerAdapter koja je parent klasa
+     * FragmentStatePagerAdapter
+     * */
     @Override
     public int getCount()
     {
@@ -57,20 +68,6 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
         super.destroyItem(container, position, object);
         mPageReferences.remove(position);
     }
-
-    public MainFragment getFragment(int key) {
-        return (MainFragment)mPageReferences.get(key);
-    }
-    public int getFragmentsCount()
-    {
-        return mPageReferences.size();
-    }
-
-    /**@Override
-    public CharSequence getPageTitle(int position)
-    {
-        return "OBJECT " + (position + 1);
-    }*/
 
 
     public MainFragment getFragmentWhere(int num)
@@ -88,6 +85,19 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
         }
         return mainf;
     }
+
+
+    
+
+    /* za sada nigde koristeno */
+    public MainFragment getFragment(int key) {
+        return (MainFragment)mPageReferences.get(key);
+    }
+    public int getFragmentsCount()
+    {
+        return mPageReferences.size();
+    }
+
 
 
 

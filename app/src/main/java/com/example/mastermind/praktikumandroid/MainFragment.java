@@ -42,6 +42,8 @@ public class MainFragment extends ListFragment {
     public static List<FeedEntry> najaveITEMS = new ArrayList<FeedEntry>();
     public static List<FeedEntry> kalendarITEMS = new ArrayList<FeedEntry>();
     public static List<FeedEntry> favsLocal_DB_ITEMS = new ArrayList<FeedEntry>();
+
+    public static List<FeedEntry> rezITEMS = new ArrayList<FeedEntry>();
     // ### #### ###
     public static List<FeedEntry> feedEntryITEMS = new ArrayList<FeedEntry>();
 
@@ -60,6 +62,9 @@ public class MainFragment extends ListFragment {
     private static String LINK_STR_RSS_OBAVESTENJA = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
     private static String LINK_STR_RSS_NAJAVE = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml"; /*http://ict.edu.rs/rss/raspored_kolokvijuma/rss.xml*/
     private static String LINK_STR_RSS_KALENDAR = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
+
+    private static String LINK_STR_RSS_REZ = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
+
     //TODO: izmeniti link za dohvatanje falja kalendara 'https://calendar.google.com/calendar/ical/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic.ics'
 
 
@@ -119,6 +124,9 @@ public class MainFragment extends ListFragment {
                 args.putBoolean("favs", true);
                 lStrRss = "";
                 break;
+            case 4:
+                lStrRss = LINK_STR_RSS_REZ;
+                break;
 
             default: lStrRss = LINK_STR_RSS_OBAVESTENJA;
         }
@@ -137,6 +145,7 @@ public class MainFragment extends ListFragment {
 
         // Set reference to this activity
         mActivity = local = this.getActivity();
+        System.out.println("mNum "  + mNum);
         GetRSSDataTask task = new GetRSSDataTask();
 
         Bundle bundArgs = new Bundle();
@@ -148,6 +157,7 @@ public class MainFragment extends ListFragment {
         //to save space use helper proc.
         // we use this one also when new fav added from listView
         syncFavsListToDB(); //TODO...?
+
 
         //shoud we do favs or not
         if(!doesFavs)
@@ -367,6 +377,13 @@ public class MainFragment extends ListFragment {
                                 //return najaveITEMS = rssReader.getItems();
                                 return kalendarITEMS = rssReader.getRssItems();*/
                                 break;
+                            case 4:
+                                rssReader.setHandler(RssReader.GENERIC_HANDLER);
+                                //return najaveITEMS = rssReader.getItems();
+                                listTmp = rssReader.getRssItems();
+                                rezITEMS = listTmp;
+                                break;
+
 
                             default:
                                MainActivity parAct = (MainActivity)getActivity();
@@ -427,6 +444,14 @@ public class MainFragment extends ListFragment {
                                         result.add(item);
                                     }
                                     break;
+                                case 4:
+                                    c = lDB.rawQuery("SELECT * FROM najave;", null);
+                                    while(c.moveToNext())
+                                    {
+                                        pumpItem(item, c);
+                                        result.add(item);
+                                    }
+                                    break;
                                 default:
                             }
                         }
@@ -478,13 +503,15 @@ public class MainFragment extends ListFragment {
                                     lDB.execSQL("delete from kalendar"); //obrisi staro
                                 for (int i=0; i<((result.size() > 4) ?  4 : result.size()); i++) {
                                     item_r = result.get(i);
-                                   
+
                                     //TODO: dodati ili prepraviti tabelu da prihvata START/END polja za event kalendara
                                     lDB.execSQL("INSERT INTO kalendar (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
                                             + " VALUES ( '" + item_r.id + "' , '" + item_r.summary + "' , '" + item_r.description + "' , '" + item_r.description + "' , '" + item_r.url + "' , '"
                                             + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.dtstart + "' , '" + item_r.dateUpdate.toString() + "' , '"
                                             + String.valueOf(mNum) + "' ); ");
                                 }
+                                break;
+                            case 4:
                                 break;
                         }
                     }
