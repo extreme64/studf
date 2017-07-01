@@ -42,6 +42,7 @@
 
 
         <ImageButton
+            android:onClick="mainList_favIt"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="FavIt"
@@ -50,7 +51,9 @@
             android:clickable="true"
             android:focusable="false"
             android:src="@drawable/ic_action_favit"
-            android:onClick="mainList_favIt"
+
              />
+
+        <!-- mainList_favIt -->
     </LinearLayout>
 </RelativeLayout>

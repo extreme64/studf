@@ -1,8 +1,7 @@
 package com.example.mastermind.praktikumandroid.ical;
 
 
-import com.example.mastermind.praktikumandroid.EntryContainer;
-import com.example.mastermind.praktikumandroid.NotfTest;
+import com.example.mastermind.praktikumandroid.FeedEntry;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -24,14 +23,11 @@ import java.util.List;
 public class ICalWrap {
 
     // List of items parsed
-    private List<CalEntry> calItems;
+    private List<FeedEntry> calItems;
     // We have a local reference to an object which is constructed while parser is working on an item tag
     // Used to reference item while parsing
 
-    //private NotfTest currentItem;
 
-    //protected Calendar cal;
-    //protected PropertyList calPropList;
     protected ComponentList calCompsList;
 
 
@@ -72,21 +68,12 @@ public class ICalWrap {
                 /* alternativa A */
                 /*  System.out.println("Property [" + cW.getDtstart().getName() + ", " + cW.getDtstart().getValue() + "]");
                 System.out.println("Property [" + cW.getDtend().getName() + ", " + cW.getDtend().getValue() + "]");
-                System.out.println("Property [" + cW.getDtstamp().getName() + ", " + cW.getDtstamp().getValue() + "]");
-                System.out.println("Property [" + cW.getUID().getName() + ", " + cW.getUID().getValue() + "]");
-                System.out.println("Property [" + cW.getCreated().getName() + ", " + cW.getCreated().getValue() + "]");
-                System.out.println("Property [" + cW.getDescription().getName() + ", " + cW.getDescription().getValue() + "]");
-                System.out.println("Property [" + cW.getLastmodified().getName() + ", " + cW.getLastmodified().getValue() + "]");
-                System.out.println("Property [" + cW.getSequence().getName() + ", " + cW.getSequence().getValue() + "]");
-                System.out.println("Property [" + cW.getStatus().getName() + ", " + cW.getStatus().getValue() + "]");
-                System.out.println("Property [" + cW.getSummary().getName() + ", " + cW.getSummary().getValue() + "]");
-                System.out.println("Property [" + cW.getTransp().getName() + ", " + cW.getTransp().getValue() + "]");
                 */
 
                 /**TODO: sada formirati niz koji je izvor adaptera liste za tab koji prikazuje kalendar */
-                CalEntry locTmp = new CalEntry(cW);
+                FeedEntry locTmp = new FeedEntry();
+                locTmp.setEntryFromICal(cW);
                 calItems.add(locTmp);
-
 
 
                 /* alternativa B za dobijanje polja */
@@ -101,7 +88,8 @@ public class ICalWrap {
 
     }
 
-    public List<CalEntry> getItems() {
+
+    public List<FeedEntry> getItems() {
         return calItems;
     }
 

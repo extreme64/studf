@@ -4,20 +4,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.example.mastermind.praktikumandroid.Entry;
-import com.example.mastermind.praktikumandroid.EntryContainer;
-import com.example.mastermind.praktikumandroid.NotfTest;
+import com.example.mastermind.praktikumandroid.FeedEntry;
 
 /**
  * Created by Mastermind on 18-Jun-15.
@@ -30,14 +25,14 @@ import com.example.mastermind.praktikumandroid.NotfTest;
 public class RssParseHandler extends DefaultHandler {
 
     // List of items parsed
-    private List<RssEntry> rssItems;
+    private List<FeedEntry> rssItems;
 
 
 
 
     // We have a local reference to an object which is constructed while parser is working on an item tag
     // Used to reference item while parsing
-    private RssEntry currentItem;
+    private FeedEntry currentItem;
     // We have two indicators which are used to differentiate whether a tag title or link is being processed by the parser
 
     private int br = 0;
@@ -52,28 +47,6 @@ public class RssParseHandler extends DefaultHandler {
 
 
 
-    {
-    /*
-    *
-    * <entry>
-    *     <id>http://www.google.com/calendar/feeds/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic/53mgifdl7j2n8405srlg4olsps</id>
-    *     <published>2014-09-22T10:55:01.000Z</published>
-    *     <updated>2015-01-04T13:47:14.000Z</updated>
-    *     <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/>
-    *     <title type='html'>Зимски распуст-први дан</title>
-    *     <summary type='html'>When: Mon Dec 29, 2014&lt;br&gt; &lt;br&gt;Event Status: confirmed</summary>
-          <content type='html'>When: Mon Dec 29, 2014&lt;br /&gt; &lt;br /&gt;Event Status: confirmed</content>
-          <link rel='alternate' type='text/html' href='http://www.google.com/calendar/event?eid=NTNtZ2lmZGw3ajJuODQwNXNybGc0b2xzcHMgaWN0LmVkdS5yc19xaW9naWtyb3Q0Y25zamJ1Z25ucDAyazYwY0Bn' title='alternate'/>
-          <link rel='self' type='application/atom+xml' href='http://www.google.com/calendar/feeds/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic/53mgifdl7j2n8405srlg4olsps'/>
-          <author>
-            <name>Dušan Stojanovic</name>
-            <email>dule@ict.edu.rs</email>
-          </author>
-     </entry>
-    *  id published summary content category
-    * */
-
-    }
 
 
     public RssParseHandler() {
@@ -81,7 +54,7 @@ public class RssParseHandler extends DefaultHandler {
     }
 
     // We have an access method which returns a list of items that are read from the RSS feed. This method will be called when parsing is done.
-    public List<RssEntry> getItems() { return rssItems; }
+    public List<FeedEntry> getItems() { return rssItems; }
 
 
     // The StartElement method creates an empty RssItem object when an item start tag is being processed. When a title or link tag are being processed appropriate indicators are set to true.
@@ -90,7 +63,9 @@ public class RssParseHandler extends DefaultHandler {
 
 
         if ("item".equals(qName) || "entry".equals(qName)) {
-            currentItem = new RssEntry(String.valueOf(br), "", "", "");
+            //currentItem = new FeedEntry(String.valueOf(br), "", "", "");
+            currentItem =  new FeedEntry();
+            currentItem.setEntryFromRss(String.valueOf(br), "", "", "");
             br++;
         }
         else if ("title".equals(qName))
@@ -119,7 +94,7 @@ public class RssParseHandler extends DefaultHandler {
 
 
         }
-        else if ("title".equals(qName))
+        else if ("title".equals(qName)) //&amp;
             parsingTitle = false;
         else if ("link".equals(qName))
             parsingLink = false;
@@ -129,6 +104,9 @@ public class RssParseHandler extends DefaultHandler {
                 currentItem.desc = cleanDesc(currentItem.desc, "<.*?>").trim(); // html tags out
                 currentItem.desc = currentItem.desc.replace("\n", "").trim(); // \n out
                 currentItem.desc = currentItem.desc.replace("&nbsp;", "").trim(); // fix '&nbsp;'
+
+                currentItem.desc = currentItem.desc.replace("<!--THIS FILE IS NOT USED AND IS HERE AS A STARTING POINT FOR CUSTOMIZATION ONLY.See http://api.drupal.org/api/function/theme_field/7 for details.After copying this file to your theme's folder and customizing it, remove thisHTML comment.-->","");
+                currentItem.desc = currentItem.desc.trim();
             }
         }
         else if("category".equals(qName))
@@ -146,7 +124,10 @@ public class RssParseHandler extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (parsingTitle) {
             if (currentItem != null)
-                currentItem.title = new String(ch, start, length);
+                currentItem.title += new String(ch, start, length);
+                //  +=   je obavezno je prilikom odredjenih karaktera (&quot) dolazi do rasparcavanje,
+                // te se svi karakteri , dok se obradjuje ovaj tag,
+                // moraju spajati da bi se dobio originalni string kao iz falja
         } else if (parsingLink) {
             if (currentItem != null) {
                 currentItem.url = new String(ch, start, length);

@@ -2,10 +2,9 @@ package com.example.mastermind.praktikumandroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -13,20 +12,15 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.mastermind.praktikumandroid.ical.CalEntry;
 import com.example.mastermind.praktikumandroid.ical.ICalWrap;
-import com.example.mastermind.praktikumandroid.rss.RssEntry;
 import com.example.mastermind.praktikumandroid.rss.RssReader;
 
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import android.util.Log;
-import android.widget.Toast;
 
 
 /**
@@ -40,17 +34,18 @@ import android.widget.Toast;
  */
 public class MainFragment extends ListFragment {
 
-    Activity mActivity;
+    Activity mActivity = null;
     MainScreenAdapter mcAdapter;
     /** tabs local heap lists */
 
-    //TODO: preinaciti liste da ih cine objekti novo rasclanjenih klasa, RssEntry i CalEntry
-    public static List<RssEntry> obavestenjaITEMS = new ArrayList<RssEntry>();
-    public static List<RssEntry> najaveITEMS = new ArrayList<RssEntry>();
-    public static List<CalEntry> kalendarITEMS = new ArrayList<CalEntry>();
-    public static List<Entry> favsLocal_DB_ITEMS = new ArrayList<Entry>();
+    public static List<FeedEntry> obavestenjaITEMS = new ArrayList<FeedEntry>();
+    public static List<FeedEntry> najaveITEMS = new ArrayList<FeedEntry>();
+    public static List<FeedEntry> kalendarITEMS = new ArrayList<FeedEntry>();
+    public static List<FeedEntry> favsLocal_DB_ITEMS = new ArrayList<FeedEntry>();
+
+    public static List<FeedEntry> rezITEMS = new ArrayList<FeedEntry>();
     // ### #### ###
-    public static List<NotfTest> NotfTestITEMS = new ArrayList<NotfTest>();
+    public static List<FeedEntry> feedEntryITEMS = new ArrayList<FeedEntry>();
 
     public static String rss_link = "http://ict.edu.rs/rss/raspored_kolokvijuma/rss.xml";
     ListView defaultListView;
@@ -65,8 +60,11 @@ public class MainFragment extends ListFragment {
 
     public int mNum;
     private static String LINK_STR_RSS_OBAVESTENJA = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
-    private static String LINK_STR_RSS_NAJAVE = "http://ict.edu.rs/rss/raspored_kolokvijuma/rss.xml";
-    private static String LINK_STR_RSS_KALENDAR = "http://www.google.com/calendar/feeds/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic";
+    private static String LINK_STR_RSS_NAJAVE = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml"; /*http://ict.edu.rs/rss/raspored_kolokvijuma/rss.xml*/
+    private static String LINK_STR_RSS_KALENDAR = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
+
+    private static String LINK_STR_RSS_REZ = "http://www.ict.edu.rs/rss/obavestenja_opsta/rss.xml";
+
     //TODO: izmeniti link za dohvatanje falja kalendara 'https://calendar.google.com/calendar/ical/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic.ics'
 
 
@@ -93,33 +91,20 @@ public class MainFragment extends ListFragment {
         }
     };
 
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public MainFragment() {
+    public MainFragment() {}
 
-        RssEntry r = new RssEntry("0", "C#2", "Ispit C#2 popravni", "");
-        List<Entry> en = null;
-        en.add(r);
-
-        /*favsLocal_DB_ITEMS.add(new NotfTest("0", "C#2", "Ispit C#2 popravni", ""));
-        favsLocal_DB_ITEMS.add(new NotfTest("1", "C#1 ", "Ispit C#1 zadatak vezba", ""));
-        favsLocal_DB_ITEMS.add(new NotfTest("2", "Rezultati", "Kolokvijum  lista bodova", ""));
-        favsLocal_DB_ITEMS.add(new NotfTest("3", "Ispiti prijava", "Prijava  20/21. jun", ""));
-        favsLocal_DB_ITEMS.add(new NotfTest("4", "Rok jun", "Ispitni rok pocinje 22. juna", ""));
-        favsLocal_DB_ITEMS.add(new NotfTest("5", "Rok jun kraj", "Ispitni rok zavrsava 05. jula", ""));*/
-    }
-
-    public void clearFavsList()
-    {   favsLocal_DB_ITEMS.clear();}
 
     /**
      * Create a new instance of CountingFragment, providing "num"
      * as an argument.
      */
     public static MainFragment newInstance(int num) {
-        MainFragment mf = new MainFragment(); //TODO: novi konstruktor sa parametrom za - int num, eliminisati potrebu za prosledjivanjem sa argumentima
+        MainFragment mf = new MainFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putInt("num", num);
@@ -139,6 +124,9 @@ public class MainFragment extends ListFragment {
                 args.putBoolean("favs", true);
                 lStrRss = "";
                 break;
+            case 4:
+                lStrRss = LINK_STR_RSS_REZ;
+                break;
 
             default: lStrRss = LINK_STR_RSS_OBAVESTENJA;
         }
@@ -157,6 +145,7 @@ public class MainFragment extends ListFragment {
 
         // Set reference to this activity
         mActivity = local = this.getActivity();
+        System.out.println("mNum "  + mNum);
         GetRSSDataTask task = new GetRSSDataTask();
 
         Bundle bundArgs = new Bundle();
@@ -167,7 +156,8 @@ public class MainFragment extends ListFragment {
         //read DB and pump into the list
         //to save space use helper proc.
         // we use this one also when new fav added from listView
-        syncFavsListToDB();
+        syncFavsListToDB(); //TODO...?
+
 
         //shoud we do favs or not
         if(!doesFavs)
@@ -177,16 +167,17 @@ public class MainFragment extends ListFragment {
         else
         {
             mcAdapter = new MainScreenAdapter(local, favsLocal_DB_ITEMS); //rssReader.getItems()
+            mcAdapter.setNotifyOnChange(true);
             mcAdapter.setTab(mNum);
             setListAdapter(mcAdapter);
         }
-        // Debug the thread name
-        //Log.d("Rss Reader", Thread.currentThread().getName());
-
     }
 
 
+    /*   ///////////////   */
 
+    public void clearFavsList()
+    {   favsLocal_DB_ITEMS.clear();}
 
     public void reFresh()
     {
@@ -206,9 +197,9 @@ public class MainFragment extends ListFragment {
         if(tmp!=null){  task.execute(tmp); }// read feeds, favs tab NOT selected
     }
 
-    //TODO: srediti sinhronizaciju fav liste
+
     public static boolean syncFavsListToDB() {
-       /* SQLiteDatabase lDB = MainActivity.DB;
+        SQLiteDatabase lDB = MainActivity.DB;
         Cursor c;
         c = lDB.rawQuery("SELECT * FROM favs;", null);
         int size = c.getCount();
@@ -217,17 +208,17 @@ public class MainFragment extends ListFragment {
         }
         favsLocal_DB_ITEMS.clear(); // !
         while (c.moveToNext()) {
-            NotfTest dbitem = new NotfTest();
+            FeedEntry dbitem = new FeedEntry();
             dbitem = pumpItem(dbitem, c);
             favsLocal_DB_ITEMS.add(dbitem);
-        }*/
+        }
         return true;
     }
 
 
-    private static RssEntry pumpItem(RssEntry i, Cursor c)
+    private static FeedEntry pumpItem(FeedEntry i, Cursor c)
     {
-        RssEntry item = i;
+        FeedEntry item = i;
         if(item!=null)
         {
             item.id = String.valueOf(c.getInt(0));
@@ -254,74 +245,11 @@ public class MainFragment extends ListFragment {
             item.fromTab = c.getString(11); // from what tab we have saved this one
         }
         if(item==null)
-            return new RssEntry();
+            return new FeedEntry();
         return item;
     }
 
-    private static CalEntry pumpCalItem(CalEntry i, Cursor c)
-    {
-        CalEntry item = i;
-        if(item!=null)
-        {
-            item.id = String.valueOf(c.getInt(0));
-          /*  item.title = c.getString(2);
-            item.desc = c.getString(3);
-            item.url = c.getString(5);*/
 
-            item.rssItemId = c.getString(1);
-           /* item.content = c.getString(4);
-            item.creator = c.getString(6);
-            item.email = c.getString(7);
-            item.category = c.getString(8);*/
-
-            String dateString1;
-            String dateString2;
-            dateString1 = c.getString(9);
-            dateString2 = c.getString(10);
-            SimpleDateFormat fmt = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
-            try {
-               /* item.date = fmt.parse(dateString1);
-                item.dateUpdate = fmt.parse(dateString2);*/
-            } catch (Exception e) {
-            }
-            item.fromTab = c.getString(11); //TODO from what tab we have saved this one
-        }
-        if(item==null)
-            return new CalEntry();
-        return item;
-    }
-   /* private static NotfTest pumpItem(NotfTest i, Cursor c)
-    {
-        NotfTest item = i;
-        if(item!=null)
-        {
-            item.id = String.valueOf(c.getInt(0));
-            item.title = c.getString(2);
-            item.desc = c.getString(3);
-            item.url = c.getString(5);
-
-            item.rssItemId = c.getString(1);
-            item.content = c.getString(4);
-            item.creator = c.getString(6);
-            item.email = c.getString(7);
-            item.category = c.getString(8);
-
-            String dateString1;
-            String dateString2;
-            dateString1 = c.getString(9);
-            dateString2 = c.getString(10);
-            SimpleDateFormat fmt = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss");
-            try {
-                item.date = fmt.parse(dateString1);
-                item.dateUpdate = fmt.parse(dateString2);
-            } catch (Exception e) {
-            }
-            item.fromTab = c.getString(11); // from what tab we have saved this one
-        }
-        if(item==null)
-            return new NotfTest();
-        return item;
-    }*/
 
 
 
@@ -363,7 +291,7 @@ public class MainFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(String.valueOf(position)); //NotfTestITEMS.get(position).id
+        mCallbacks.onItemSelected(String.valueOf(position)); //feedEntryITEMS.get(position).id
     }
 
     @Override
@@ -398,14 +326,16 @@ public class MainFragment extends ListFragment {
 
     //      ##########   INNER CLASSES #########
 
-            private class GetRSSDataTask extends AsyncTask<String, Void, List<RssEntry> > {
+            private class GetRSSDataTask extends AsyncTask<String, Void, List<FeedEntry> >{
 
                 @Override
-                protected List<RssEntry> doInBackground(String... urls) {
+                protected List<FeedEntry> doInBackground(String... urls) {
+                    List<FeedEntry>  listTmp = null;
 
                     try {
                         // Create RSS reader
-                        RssReader rssReader = new RssReader(urls[0], mActivity);
+                        //RssReader rssReader = new RssReader(urls[0], mA ctivity);
+                        RssReader rssReader = new RssReader(urls[0]);
 
                         // Parse RSS, get items
                         switch (mNum)
@@ -413,35 +343,74 @@ public class MainFragment extends ListFragment {
                             case 0:
                                 rssReader.setHandler(RssReader.GENERIC_HANDLER);
                                 //obavestenjaITEMS = rssReader.getItems(); // ako feed dostupan, citamo sa njega
-                                obavestenjaITEMS = rssReader.getRssItems();
-                                return obavestenjaITEMS;
+                                listTmp = rssReader.getRssItems();
+                                obavestenjaITEMS = listTmp;
+                                //return obavestenjaITEMS;
+                                break;
                             case 1:
                                 rssReader.setHandler(RssReader.GENERIC_HANDLER);
                                 //return najaveITEMS = rssReader.getItems();
-                                return najaveITEMS = rssReader.getRssItems();
+                                listTmp = rssReader.getRssItems();
+                                najaveITEMS = listTmp;
+                                break;
                             case 2:
+                                try
+                                {
+                                    // Create RSS reader
+                                    ICalWrap iCalReader = new ICalWrap();
+
+                                    InputStream fin = null;
+
+                                    Context conx = mActivity;
+                                    AssetManager am = conx.getAssets();
+                                    fin = am.open("basic.ics");
+
+                                    iCalReader.init(fin);
+                                    //return kalendarITEMS = rssReader.getItems();
+                                    listTmp = iCalReader.getItems();
+                                    kalendarITEMS = listTmp;
+                                    //return kalendarITEMS;
+
+                              }
+                                catch (Exception e)  { Log.e("ITCRssReader", e.getMessage()); return null; }
+                              /*  rssReader.setHandler(RssReader.GENERIC_HANDLER);
+                                //return najaveITEMS = rssReader.getItems();
+                                return kalendarITEMS = rssReader.getRssItems();*/
+                                break;
+                            case 4:
+                                rssReader.setHandler(RssReader.GENERIC_HANDLER);
+                                //return najaveITEMS = rssReader.getItems();
+                                listTmp = rssReader.getRssItems();
+                                rezITEMS = listTmp;
+                                break;
+
 
                             default:
-                                //TODO: da li nam ovo treba? trenutno ima error!
-                               /* MainActivity parAct = (MainActivity)getActivity();
-                                ViewPager mainViewPager = parAct.getViewPager();
+                               MainActivity parAct = (MainActivity)getActivity();
+                                final ViewPager mainViewPager = parAct.getViewPager();
                                 if(mainViewPager!=null) {
-                                    mainViewPager.setCurrentItem(3);
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mainViewPager.setCurrentItem(3);
+                                        }
+                                    });
+
                                     getActivity().getActionBar().setSelectedNavigationItem(3);
-                                }*/
+                                }
                         }
                     }
                     catch (Exception e)  { Log.e("ITCRssReader", e.getMessage()); }
-                    return null;
+                    return listTmp;
                 }
 
                 @Override
-                protected void onPostExecute(List<RssEntry> result) {
+                protected void onPostExecute(List<FeedEntry> result) {
 
-                  /*  SQLiteDatabase lDB = MainActivity.DB;
+                    SQLiteDatabase lDB = MainActivity.DB;
                     Cursor c;
-
-                    if(result.size() == 0)
+                    FeedEntry item = new FeedEntry();
+                    if(result.size() == 0) //TODO FIX refresh daje trenutno NULLPOINT izuzetak i baca ga ovde !!!!
                     {
                         //pokusaj citati iz baze, u nadi da ima sta snimljeno
                         // tabela koja se cita se odredjuje na osnovu vrednosti - mNum
@@ -452,10 +421,9 @@ public class MainFragment extends ListFragment {
 
                                 case 0:
                                     c = lDB.rawQuery("SELECT * FROM obavestenja;", null);
-                                    size = c.getCount();
+                                    //size = c.getCount(); //TODO: ???
                                     while(c.moveToNext())
                                     {
-                                        NotfTest item = new NotfTest();
                                         pumpItem(item, c);
                                         result.add(item);
                                     }
@@ -464,7 +432,6 @@ public class MainFragment extends ListFragment {
                                     c = lDB.rawQuery("SELECT * FROM najave;", null);
                                     while(c.moveToNext())
                                     {
-                                        NotfTest item = new NotfTest();
                                         pumpItem(item, c);
                                         result.add(item);
                                     }
@@ -473,7 +440,14 @@ public class MainFragment extends ListFragment {
                                     c = lDB.rawQuery("SELECT * FROM kalendar;", null);
                                     while(c.moveToNext())
                                     {
-                                        NotfTest item = new NotfTest();
+                                        pumpItem(item, c);
+                                        result.add(item);
+                                    }
+                                    break;
+                                case 4:
+                                    c = lDB.rawQuery("SELECT * FROM najave;", null);
+                                    while(c.moveToNext())
+                                    {
                                         pumpItem(item, c);
                                         result.add(item);
                                     }
@@ -489,7 +463,7 @@ public class MainFragment extends ListFragment {
                         // tabela u koju se zapisuje se odredjuje na osnovu vrednosti - mNum
                         if(lDB == null)
                             return; // mesage "nema baze za pristupiti"
-                        NotfTest item_r = new NotfTest();
+                        FeedEntry item_r = new FeedEntry();
                         int size = -1;
                         switch (mNum) {
                             case 0:
@@ -524,15 +498,20 @@ public class MainFragment extends ListFragment {
                             case 2:
                                 c = lDB.rawQuery("SELECT `id` FROM kalendar;", null);
                                 size = c.getCount();
+                                //TODO: globalna var, ako vise od N dana - onda cuvati ako manje nista npr.
                                 if(size>0)
                                     lDB.execSQL("delete from kalendar"); //obrisi staro
                                 for (int i=0; i<((result.size() > 4) ?  4 : result.size()); i++) {
                                     item_r = result.get(i);
+
+                                    //TODO: dodati ili prepraviti tabelu da prihvata START/END polja za event kalendara
                                     lDB.execSQL("INSERT INTO kalendar (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
-                                            + " VALUES ( '" + item_r.rssItemId + "' , '" + item_r.title + "' , '" + item_r.desc + "' , '" + item_r.content + "' , '" + item_r.url + "' , '"
-                                            + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.date.toString() + "' , '" + item_r.dateUpdate.toString() + "' , '"
+                                            + " VALUES ( '" + item_r.id + "' , '" + item_r.summary + "' , '" + item_r.description + "' , '" + item_r.description + "' , '" + item_r.url + "' , '"
+                                            + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.dtstart + "' , '" + item_r.dateUpdate.toString() + "' , '"
                                             + String.valueOf(mNum) + "' ); ");
                                 }
+                                break;
+                            case 4:
                                 break;
                         }
                     }
@@ -540,155 +519,12 @@ public class MainFragment extends ListFragment {
                     if(local==null)
                         return;
                     mcAdapter = new MainScreenAdapter(local, result);
+                    mcAdapter.setNotifyOnChange(true);
                     mcAdapter.setTab(mNum);
-                    setListAdapter(mcAdapter);*/
+                    setListAdapter(mcAdapter);
 
                 }
             }
 
-    //      ##########   INNER CLASSES #########
-
-    private class GetICAlDataTask extends AsyncTask<String, Void, List<CalEntry> > {
-
-        @Override
-        protected List<CalEntry> doInBackground(String... urls) {
-
-            try {
-                // Create RSS reader
-                ICalWrap iCalReader = new ICalWrap();
-
-
-                iCalReader.init(new InputStream() {
-                    @Override
-                    public int read() throws IOException {
-                        return 0;
-                    }
-                });
-                //return kalendarITEMS = rssReader.getItems();
-                return kalendarITEMS = iCalReader.getItems();
-
-                //TODO: da li nam ovo treba? trenutno ima error!
-                       /* MainActivity parAct = (MainActivity)getActivity();
-                        ViewPager mainViewPager = parAct.getViewPager();
-                        if(mainViewPager!=null) {
-                            mainViewPager.setCurrentItem(3);
-                            getActivity().getActionBar().setSelectedNavigationItem(3);
-                        }*/
-
-            }
-            catch (Exception e)  { Log.e("ITCRssReader", e.getMessage()); }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<CalEntry> result) {
-
-           /* SQLiteDatabase lDB = MainActivity.DB;
-            Cursor c;
-
-            if(result.size() == 0)
-            {
-                //pokusaj citati iz baze, u nadi da ima sta snimljeno
-                // tabela koja se cita se odredjuje na osnovu vrednosti - mNum
-                if(result.size()==0) //ako nista sa fida, pokusajmo uzeti sta ima u bazi
-                {
-                    int size;
-                    switch (mNum) {
-
-                        case 0:
-                            c = lDB.rawQuery("SELECT * FROM obavestenja;", null);
-                            size = c.getCount();
-                            while(c.moveToNext())
-                            {
-                                NotfTest item = new NotfTest();
-                                pumpItem(item, c);
-                                result.add(item);
-                            }
-                            break;
-                        case 1:
-                            c = lDB.rawQuery("SELECT * FROM najave;", null);
-                            while(c.moveToNext())
-                            {
-                                NotfTest item = new NotfTest();
-                                pumpItem(item, c);
-                                result.add(item);
-                            }
-                            break;
-                        case 2:
-                            c = lDB.rawQuery("SELECT * FROM kalendar;", null);
-                            while(c.moveToNext())
-                            {
-                                NotfTest item = new NotfTest();
-                                pumpItem(item, c);
-                                result.add(item);
-                            }
-                            break;
-                        default:
-                    }
-                }*/
-                //obavestenjaITEMS = rssReader.getItems();
-           /* }
-            else
-            {*/
-                //upis u bazu novih item-a iz fida
-                // tabela u koju se zapisuje se odredjuje na osnovu vrednosti - mNum
-              /*  if(lDB == null)
-                    return; // mesage "nema baze za pristupiti"
-                NotfTest item_r = new NotfTest();
-                int size = -1;
-                switch (mNum) {
-                    case 0:
-
-                        c = lDB.rawQuery("SELECT `id` FROM obavestenja;", null);
-                        size = c.getCount();
-                        if (size > 0)
-                            lDB.execSQL("delete from obavestenja"); //obrisi staro
-                        for (int i = 0; i < ((result.size() > 4) ? 4 : result.size()); i++) {
-                            item_r = result.get(i);
-                            lDB.execSQL("INSERT INTO obavestenja (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
-                                    + " VALUES ( '" + item_r.rssItemId + "' , '" + item_r.title + "' , '" + item_r.desc + "' , '" + item_r.content + "' , '" + item_r.url + "' , '"
-                                    + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.date.toString() + "' , '" + item_r.dateUpdate.toString()
-                                    + "' , '" + String.valueOf(mNum) + "' ); ");
-                        }
-
-                        break;
-                    case 1:
-                        c = lDB.rawQuery("SELECT `id` FROM najave;", null);
-                        size = c.getCount();
-                        if(size>0)
-                            lDB.execSQL("delete from najave"); //obrisi staro
-                        int limit = (result.size() > 4) ?  4 : result.size();
-                        for (int i=0; i<limit; i++) {
-                            item_r = result.get(i);
-                            lDB.execSQL("INSERT INTO najave (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
-                                    + " VALUES ( '" + item_r.rssItemId + "' , '" + item_r.title + "' , '" + item_r.desc + "' , '" + item_r.content + "' , '" + item_r.url + "' , '"
-                                    + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.date.toString() + "' , '" + item_r.dateUpdate.toString()
-                                    + "' , '" + String.valueOf(mNum) + "' ); ");
-                        }
-                        break;
-                    case 2:
-                        c = lDB.rawQuery("SELECT `id` FROM kalendar;", null);
-                        size = c.getCount();
-                        if(size>0)
-                            lDB.execSQL("delete from kalendar"); //obrisi staro
-                        for (int i=0; i<((result.size() > 4) ?  4 : result.size()); i++) {
-                            item_r = result.get(i);
-                            lDB.execSQL("INSERT INTO kalendar (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
-                                    + " VALUES ( '" + item_r.rssItemId + "' , '" + item_r.title + "' , '" + item_r.desc + "' , '" + item_r.content + "' , '" + item_r.url + "' , '"
-                                    + item_r.creator + "' , '" + item_r.email + "' , '" + item_r.category + "' , '" + item_r.date.toString() + "' , '" + item_r.dateUpdate.toString() + "' , '"
-                                    + String.valueOf(mNum) + "' ); ");
-                        }
-                        break;
-                }*/
-           // }
-/*
-            if(local==null)
-                return;
-            mcAdapter = new MainScreenAdapter(local, result);
-            mcAdapter.setTab(mNum);
-            setListAdapter(mcAdapter);*/
-
-        }
-    }
 
 }

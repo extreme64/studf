@@ -2,22 +2,14 @@ package com.example.mastermind.praktikumandroid;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mastermind.praktikumandroid.rss.RssEntry;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +18,17 @@ import java.util.List;
 /**
  * Created by Mastermind on 15-Jun-15.
  */
-public class MainScreenAdapter extends ArrayAdapter<Entry> {
+public class MainScreenAdapter extends ArrayAdapter<FeedEntry> {
 
-    public List<Entry> notfTestListITEMS = new ArrayList<Entry>();
+    public List<FeedEntry> feedEntryListITEMS = new ArrayList<FeedEntry>();
     Activity context;
     LayoutInflater inflater ;
     private int tab;
 
-    public MainScreenAdapter(Context context, List<Entry> objects) {
+    public MainScreenAdapter(Context context, List<FeedEntry> objects) {
         super(context, 0, objects);
         this.context = (Activity)context;
-        this.notfTestListITEMS = (List<Entry>)objects;
+        this.feedEntryListITEMS = (List<FeedEntry>)objects;
 
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -44,9 +36,9 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
 
     @Override
     public int getCount() {
-        if(notfTestListITEMS==null)
+        if(feedEntryListITEMS ==null)
             return 0;
-        return notfTestListITEMS.size();
+        return feedEntryListITEMS.size();
     }
 
     @Override
@@ -57,39 +49,68 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        RssEntry ecitem = (RssEntry)notfTestListITEMS.get(position);
-        RssEntry item = ecitem;
-        View view = convertView;
+        FeedEntry ecitem = (FeedEntry) feedEntryListITEMS.get(position);
+        FeedEntry item = ecitem;
+
+        View view = convertView; // usteda
+        TextView title;
+        TextView date;
 
         if (view == null)
         {
-            if(tab==3)
-            {
-                view = inflater.inflate(R.layout.main_list_item_pattern_favs, parent, false);
-            }
-            else{ view = inflater.inflate(R.layout.main_list_item_pattern, parent, false); }
+            view = inflater.inflate(R.layout.main_list_item_pattern_favs, parent, false);
         }
-        TextView title = (TextView)view.findViewById(R.id.tvTitle);
+        title = (TextView) view.findViewById(R.id.tvTitle);
         title.setTextSize(15);
+        date = (TextView) view.findViewById(R.id.tvDate);
 
-        TextView date = (TextView)view.findViewById(R.id.tvDate);
-        title.setText("\n'" + item.title + " '"); //item.fromTab + " ID: " + item.id +" rID: "+ item.rssItemId +
-        SimpleDateFormat fmt2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        if(item.date!=null)
+        if(tab==2)/* ako kalendar, onda dizajn za njega... */
         {
-            fmt2.format(item.date);
-            date.setText(fmt2.format(item.date));
-            date.setTextSize(13);
+
+            title.setText("\n'" + item.summary + " '"); //item.fromTab + " ID: " + item.id +" rID: "+ item.rssItemId +
+
+            if(item.lastmodified!=null)
+            {
+
+                String priStr = item.lastmodified;
+                String[] a_priStr = priStr.split("Z"); //eleminisemo Z
+                a_priStr = a_priStr[0].split("T"); //delimo na T, datum od vremena
+                if(a_priStr[0].length() != 8){a_priStr[0]="0";}
+                /* stringovi datuma */
+                String y = a_priStr[0].substring(0,4);
+                String m = a_priStr[0].substring(4,6);
+                String d = a_priStr[0].substring(6,8);
+                /* stringovi vremena */
+                String s = a_priStr[1].substring(0,2);
+                String mi = a_priStr[1].substring(2,4);
+                String se = a_priStr[1].substring(4,6);
+
+                date.setText(d + "/" + m + "/" + y + " " + s + ":" + mi); //fmt2.format(a_priStr[0])
+                date.setTextSize(13);
+            }
         }
+        else
+        { /* ...za ostale tabove */
+
+            title.setText("\n'" + item.title + " '"); //item.fromTab + " ID: " + item.id +" rID: "+ item.rssItemId +
+
+            SimpleDateFormat fmt2 = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            if(item.date!=null)
+            {
+                fmt2.format(item.date);
+                date.setText(fmt2.format(item.date));
+                date.setTextSize(13);
+            }
+
+        }
+
+
 
         int tab = ((MainActivity)context).getActionBar().getSelectedTab().getPosition();
 
         ImageButton imgButton = (ImageButton) view.findViewById(R.id.imgButton);
-        /**
-         * possibly multiple resetting of properties, causes UI to misbehave !!!! SOLVED do nothing
-         */
-        //imgButton.setClickable(true);
-        //imgButton.setEnabled(true);
+        imgButton.setClickable(true);
+        imgButton.setEnabled(true);
         imgButton.setFocusable(false); // anti focus grab
 
         ImageView ico = (ImageView)view.findViewById(R.id.ivIco);
@@ -97,17 +118,23 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
                                 R.drawable.ic_action_clock,
                                 R.drawable.ic_action_calcool,
                                 R.drawable.ic_action_favbook_dblue  };
+
+
         switch (this.tab)
         {
             case 0:
                 ico.setImageResource(iconsForTabs[0]);
                 if (MainFragment.favsLocal_DB_ITEMS.size() > 0) {
-                    for (Entry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
+                    for (FeedEntry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
 
-                        if (((RssEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
+                        if (((FeedEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
                             // imgButton.setClickable(false);
                             imgButton.setEnabled(false);
+                            imgButton.setVisibility(View.INVISIBLE);
                             break;
+                        }else{
+                            imgButton.setEnabled(true);
+                            imgButton.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -115,12 +142,15 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
             case 1:
                 ico.setImageResource(iconsForTabs[1]);
                 if (MainFragment.favsLocal_DB_ITEMS.size() > 0) {
-                    for (Entry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
+                    for (FeedEntry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
 
-                        if (((RssEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
+                        if (((FeedEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
                             // imgButton.setClickable(false);
                             imgButton.setEnabled(false);
                             break;
+                        }else{
+                            imgButton.setEnabled(true);
+                            imgButton.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -128,12 +158,15 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
             case 2:
                 ico.setImageResource(iconsForTabs[2]);
                 if (MainFragment.favsLocal_DB_ITEMS.size() > 0) {
-                    for (Entry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
+                    for (FeedEntry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
 
-                        if (((RssEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
+                        if (((FeedEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
                             // imgButton.setClickable(false);
                             imgButton.setEnabled(false);
                             break;
+                        }else{
+                            imgButton.setEnabled(true);
+                            imgButton.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -144,6 +177,22 @@ public class MainScreenAdapter extends ArrayAdapter<Entry> {
                 imgButton.setEnabled(true);
                 item.fromTab = "3";
 
+                break;
+            case 4:
+                ico.setImageResource(iconsForTabs[1]);
+                if (MainFragment.favsLocal_DB_ITEMS.size() > 0) {
+                    for (FeedEntry itemToCompTo : MainFragment.favsLocal_DB_ITEMS) {
+
+                        if (((FeedEntry)itemToCompTo).rssItemId.equals(item.rssItemId)) {
+                            // imgButton.setClickable(false);
+                            imgButton.setEnabled(false);
+                            break;
+                        }else{
+                            imgButton.setEnabled(true);
+                            imgButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
                 break;
         }
 

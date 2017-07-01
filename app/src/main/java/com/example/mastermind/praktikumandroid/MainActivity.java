@@ -1,8 +1,6 @@
 package com.example.mastermind.praktikumandroid;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -11,18 +9,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import java.util.List;
 
-import com.example.mastermind.praktikumandroid.dummy.DemoCollectionPagerAdapter;
+import com.example.mastermind.praktikumandroid.conn.GetConnSSL;
+import com.example.mastermind.praktikumandroid.conn.GetFromURL;
+import com.example.mastermind.praktikumandroid.conn.PostConnSSL;
 
+import java.net.URL;
 
 
 public class MainActivity extends FragmentActivity
@@ -35,10 +37,15 @@ public class MainActivity extends FragmentActivity
     public Toast toast;
     ListView listView;
 
-    String [] tabNames = {"Rezultati", "Obaveštenja", "Najave", "Kalendar", "Sačuvano"};
 
-    DemoCollectionPagerAdapter mDemoCollectionPagerAdapter;
+    /* brojs tranica aplikacije, tj. CollectionPagerAdapter-a */
+    protected static final int PAGE_NUMER=5;
+    // ime tab za svaku od sranica adaptera 'CollectionPagerAdapter'
+    String [] tabNames = { "Obaveštenja", "Najave", "Kalendar", "Sačuvano", "Rezultati"};
+    CollectionPagerAdapter mCollectionPagerAdapter;
     ViewPager mViewPager;
+
+
     public static SQLiteDatabase DB;
     public static final int NUM_ITEMS_IN_DB = 4;
 
@@ -58,16 +65,29 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_item_list);
 
 
-        mDemoCollectionPagerAdapter =
-                new DemoCollectionPagerAdapter(
-                        getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
-
-        /** toolbar actionbar tab */
+        /** toolbar actionbar tab
+         * tabovi za selekciju stranice viewpager-a
+         * */
         final ActionBar abar = this.getActionBar();
         abar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         abar.setHomeButtonEnabled(true);
+        /** da bi smo mogli kontrolisati LAYOUT za actionbar */
+        abar.setDisplayShowCustomEnabled(true);
+
+        View abarCustomView = LayoutInflater.from(this).inflate(R.layout.actionbar, null);
+        ActionBar.LayoutParams actB_lpars = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+        abar.setCustomView(abarCustomView,actB_lpars);
+
+
+
+        mCollectionPagerAdapter =
+                new CollectionPagerAdapter(
+                        getSupportFragmentManager());
+        mCollectionPagerAdapter.setNUM_PAGES(PAGE_NUMER); // adapter radi sa ovoliko stranica tj. fragmenta !!!!!!
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mCollectionPagerAdapter);
+
 
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -76,7 +96,7 @@ public class MainActivity extends FragmentActivity
                 // show the given tab
                 mViewPager.setCurrentItem(locTmpInt);
 
-               /* MainFragment mfn = ((MainFragment)mDemoCollectionPagerAdapter.getItem(locTmpInt));
+               /* MainFragment mfn = ((MainFragment)mCollectionPagerAdapter.getItem(locTmpInt));
                 if(mfn!=null) {
                     mfn.mNum = locTmpInt;
                     mfn.refreshAdapter();
@@ -86,14 +106,11 @@ public class MainActivity extends FragmentActivity
                 {
                     case 0:
                         if (findViewById(R.id.item_detail_container) != null) {
-                            // The detail container view will be present only in the
-                            // large-screen layouts (res/values-large and
-                            // res/values-sw600dp). If this view is present, then the
-                            // activity should be in two-pane mode.
+                            // The detail container view will be present only in the large-screen layouts (res/values-large and
+                            // res/values-sw600dp). If this view is present, then the activity should be in two-pane mode.
                             mTwoPane = true;
 
-                            // In two-pane mode, list items should be given the
-                            // 'activated' state when touched.
+                            // In two-pane mode, list items should be given the 'activated' state when touched.
                             ((MainFragment) getSupportFragmentManager()
                                     .findFragmentById(R.id.item_list))
                                     .setActivateOnItemClick(true);
@@ -115,9 +132,12 @@ public class MainActivity extends FragmentActivity
         };
 
         // fill a.Bar with tabs
-            for (int i = 0; i < tabNames.length; i++)
-                abar.addTab( abar.newTab().setText(tabNames[i]).setTabListener(tabListener));
-        //####  #######  ####  ######
+        for (int i = 0; i < tabNames.length; i++)
+            abar.addTab( abar.newTab().setText(tabNames[i]).setTabListener(tabListener));
+
+
+
+
 
         //ako treba da se vratimo
         // da bi znali gde
@@ -183,18 +203,35 @@ public class MainActivity extends FragmentActivity
             }
         }
 
+        // GetConnSSL testConn = new GetConnSSL(this);
+        PostConnSSL testConn = new PostConnSSL(this);
+         testConn.execute();
+
+        //GetFromURL conn_noSSL = new GetFromURL("http://www.ict.edu.rs");
+        //System.out.println("RES on YRL stat:" + conn_noSSL.getResponse("http://www.ict.edu.rs"));
+
+
+        System.out.println(" ////////////////////// //////////////////////////////////////////////////////////// ");
+        //GetFromURL conn_noSSL = new GetFromURL("http://www.ict.edu.rs");
+        //conn_noSSL.test();
+
+       // new GetFromURL("http://www.ict.edu.rs").execute();
+
+        /** konekcija za logovanje ne SSl,...
+         * dohvatiti rezultati URL
+         * naci mesto gde cemo parsirati link */
 
     }
 
 
 
-//TODO
+
     public void wrapStartService()
     {
        /* Intent serviceIntent = new Intent("com.example.mastermind.praktikumandroid.CheckServerService");
         this.startService(serviceIntent);*/
     }
-//TODO
+
     public boolean wrapStopService()
     {
       /*  if (isMyServiceRunning())
@@ -202,7 +239,7 @@ public class MainActivity extends FragmentActivity
         return isMyServiceRunning();*/
         return  true;
     }
-//TODO
+
     private boolean isMyServiceRunning() {
         return true;
       /*  ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -296,7 +333,7 @@ public class MainActivity extends FragmentActivity
 
         for(int i=0; i < fragCurnum; i++)
         {
-            MainFragment mf = (MainFragment)((DemoCollectionPagerAdapter)mViewPager.getAdapter()).getItem(i);
+            MainFragment mf = (MainFragment)((CollectionPagerAdapter)mViewPager.getAdapter()).getItem(i);
             mf.mNum=i;
             mf.local = this;
             mf.reFresh();
@@ -305,39 +342,39 @@ public class MainActivity extends FragmentActivity
         Toast.makeText(this, "Refrash", Toast.LENGTH_SHORT).show();
     }
 
+
     public void mainList_favIt(View view) {
-        NotfTest n = (NotfTest) view.getTag();
-        String s="Fav već sačuvan!";
+        System.out.print("KLIKNUTO FUV !!!!!!!!!!!!!");
+        FeedEntry n = (FeedEntry) view.getTag();
+        String s = "Fav već sačuvan!";
         Cursor c = DB.rawQuery("SELECT * FROM favs WHERE rssItemId='" + n.rssItemId + "' ;", null);
         if(n!=null)
         {
             int t = mViewPager.getCurrentItem();
             if (c.getCount() > 0)
                 return;
+
+            //TODO:  srediti parsiranje ovih polja DESC i CONTENT   desc / '" + n.desc + "' , '
             DB.execSQL("INSERT INTO favs (rssItemId, title, desc, content, url, creator, email, category, date, dateUpdate, tab) "
                     + " VALUES ( '" + n.rssItemId + "' , '" + n.title + "' , '" + n.desc + "' , '" + n.content + "' , '" + n.url + "' , '"
                     + n.creator + "' , '" + n.email + "' , '" + n.category + "' , '" + n.date.toString() + "' , '" + n.dateUpdate.toString() + "', '" + String.valueOf(t)+"' ); ");
             s = "FAVed!!! : " + t;
+         /*   view.setClickable(false);*/
+            view.setEnabled(false);
+            view.setVisibility(View.INVISIBLE);
         }
 
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
         toast = Toast.makeText(context,s, duration);
-
         try
         {
             if(toast.getView().isShown() == false) // ako false ne prikazuj više, tek nakon toga
                 toast.show();
         }
-        catch (Exception e)  // ako izuzetak nevidljivo
-        {}
-
-        view.setClickable(false);
-        view.setEnabled(false);
-
+        catch (Exception e) { /* ako izuzetak nista ne prikazujemo */ }
 
         // nakon dodavanja u Db sinhroniyacija sa listom u app
-        // statička procedura za to
         MainFragment.syncFavsListToDB();
     }
 
@@ -348,31 +385,44 @@ public class MainActivity extends FragmentActivity
     public void onClk_removeFav_mnAct(View v)
     {
 
-        if(mDemoCollectionPagerAdapter != null) {
+        if(mCollectionPagerAdapter != null) {
 
 
-            List<android.support.v4.app.Fragment> lf = mDemoCollectionPagerAdapter.mFragmentManager.getFragments();
-            MainFragment frag = (MainFragment) mDemoCollectionPagerAdapter.getFragmentWhere(3);
+            MainFragment mf = new MainFragment();
+            //List<android.support.v4.app.Fragment> lf = mCollectionPagerAdapter.mFragmentManager.getFragments();
+            //MainFragment frag = (MainFragment) mCollectionPagerAdapter.getFragmentWhere(mf.mNum); //3
 
-            int t = lf.size();
-            int r = frag.mNum;
+            //int t = lf.size();
+            //int r = frag.mNum;
+           //ListView lw = frag.getListView();
 
-            ListView lw = frag.getListView();
-            frag.mcAdapter.setNotifyOnChange(true);
+            //frag.mcAdapter.setNotifyOnChange(true);
             //lw.scrollBy(0, 0);
 
-            NotfTest item = (NotfTest) v.getTag();
+            FeedEntry item = (FeedEntry) v.getTag();
             String[] arg = {item.rssItemId};
 
             int retStat = DB.delete("favs", "rssItemId = ?", arg);
             MainFragment.favsLocal_DB_ITEMS.remove(item);
-            //frag.mcAdapter.remove(item); //TODO od komentarisati fix!
+
+            //kada favujemo brise stavku iz
+            MainFragment frag = (MainFragment) mCollectionPagerAdapter.getFragmentWhere(3);
+            if(frag!=null)
+                frag.mcAdapter.remove(item);
+
+            /*ListView lw = frag.getListView();
+            int frag_fav_size = lw.getCount();
+            if(frag_fav_size>0){
+                frag.mcAdapter.remove(item);
+            }*/
 
 
-            //frag.mcAdapter.notifyDataSetChanged(); if this set setNotifyOnChange(true), then not needed
+            //frag.mcAdapter.notifyDataSetChanged(); // if this set setNotifyOnChange(true), then not needed
 
             if (retStat == 1)
                 Toast.makeText(this, "Deleted " + arg[0], Toast.LENGTH_LONG).show();
+            else
+                mainList_favIt(v);
         }
 
 

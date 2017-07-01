@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="MyAppTheme" parent="@android:style/Theme.Holo.Light">
+       <item name="android:actionBarTabBarStyle" >@style/MyAppTheme.ActionBar.TabBar</item>
+    </style>
+
+
+    <style name="MyAppTheme.ActionBar.TabBar" parent="android:style/Widget.Holo.Light.ActionBar.TabBar">
+        <item name="android:backround">#111</item>
+    </style>
+    <!--android:theme="@style/MyAppTheme" -->
+
+</resources>
