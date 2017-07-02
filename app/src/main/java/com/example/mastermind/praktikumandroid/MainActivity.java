@@ -76,7 +76,7 @@ public class MainActivity extends FragmentActivity
 
         View abarCustomView = LayoutInflater.from(this).inflate(R.layout.actionbar, null);
         ActionBar.LayoutParams actB_lpars = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        abar.setCustomView(abarCustomView,actB_lpars);
+        abar.setCustomView(abarCustomView,actB_lpars);// specijalni view
 
 
 
