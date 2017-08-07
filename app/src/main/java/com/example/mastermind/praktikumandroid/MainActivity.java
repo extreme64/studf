@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity //FragmentActivity
         tabLayoutMain.setTabGravity(TabLayout.GRAVITY_FILL);
 
 
-
+ 
 
         // Now for the ViewPager
         final ViewPager viewPager = (ViewPager)findViewById(R.id.ViewPagerMain);
