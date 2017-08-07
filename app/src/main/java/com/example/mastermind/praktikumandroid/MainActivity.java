@@ -1,33 +1,29 @@
 package com.example.mastermind.praktikumandroid;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
-import com.example.mastermind.praktikumandroid.conn.GetConnSSL;
-import com.example.mastermind.praktikumandroid.conn.GetFromURL;
+
+
+
 import com.example.mastermind.praktikumandroid.conn.PostConnSSL;
 
-import java.net.URL;
 
-
-public class MainActivity extends FragmentActivity
+public class MainActivity extends AppCompatActivity //FragmentActivity
         implements MainFragment.Callbacks
 {
 
@@ -43,6 +39,7 @@ public class MainActivity extends FragmentActivity
     // ime tab za svaku od sranica adaptera 'CollectionPagerAdapter'
     String [] tabNames = { "Obaveštenja", "Najave", "Kalendar", "Sačuvano", "Rezultati"};
     CollectionPagerAdapter mCollectionPagerAdapter;
+    static TabLayout tabLayoutMain;
     ViewPager mViewPager;
 
 
@@ -62,18 +59,65 @@ public class MainActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
+        //setContentView(R.layout.activity_item_list);
+        setContentView(R.layout.activity_main);
 
 
         /** toolbar actionbar tab
          * tabovi za selekciju stranice viewpager-a
          * */
+        //get toolbar view to get ref.
+        Toolbar toolbar_main = (Toolbar) findViewById(R.id.toolbarMain);
+        //set toolbar_main to act as actionbar
+        setSupportActionBar(toolbar_main);
+
+        // options for toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        // tabs for tablayout
+        tabLayoutMain = (TabLayout) findViewById(R.id.TabLayoutMain);
+        // add tabs to tab layout
+        tabLayoutMain.addTab(tabLayoutMain.newTab().setText("TAB1"));
+        tabLayoutMain.addTab(tabLayoutMain.newTab().setText("TAB2"));
+        tabLayoutMain.setTabGravity(TabLayout.GRAVITY_FILL);
+
+
+
+
+        // Now for the ViewPager
+        final ViewPager viewPager = (ViewPager)findViewById(R.id.ViewPagerMain);
+
+       //TB. final MainPager_Adapter vp_adapter = new MainPager_Adapter(getSupportFragmentManager(), tabLayoutMain.getTabCount());
+        final CollectionPagerAdapter vp_adapter = new CollectionPagerAdapter(getSupportFragmentManager(), tabLayoutMain.getTabCount());
+
+        viewPager.setAdapter(vp_adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayoutMain));
+
+        tabLayoutMain.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+
+
+
+        /* TB.
         final ActionBar abar = this.getActionBar();
         abar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         abar.setHomeButtonEnabled(true);
-        /** da bi smo mogli kontrolisati LAYOUT za actionbar */
-        abar.setDisplayShowCustomEnabled(true);
 
+        /** da bi smo mogli kontrolisati LAYOUT za actionbar */
+        /* TB.
+        abar.setDisplayShowCustomEnabled(true);
         View abarCustomView = LayoutInflater.from(this).inflate(R.layout.actionbar, null);
         ActionBar.LayoutParams actB_lpars = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
         abar.setCustomView(abarCustomView,actB_lpars);// specijalni view
@@ -102,6 +146,7 @@ public class MainActivity extends FragmentActivity
                     mfn.refreshAdapter();
                 }*/
 
+        /* TB.
                 switch (tab.getPosition())
                 {
                     case 0:
@@ -138,9 +183,7 @@ public class MainActivity extends FragmentActivity
 
 
 
-
-        //ako treba da se vratimo
-        // da bi znali gde
+        //ako treba da se vratimo, da bi znali gde
         String tabToSelect;
         boolean  hasE = getIntent().hasExtra("tabToSetAsCurrent");
         if(hasE)
@@ -153,7 +196,9 @@ public class MainActivity extends FragmentActivity
                 getActionBar().setSelectedNavigationItem(tab);
             }
         }
+        TB. */
 
+        /* ++++ Data Base ++++ */
         DB = openOrCreateDatabase("favsDB", Context.MODE_PRIVATE, null);
         //DB.execSQL("DROP TABLE IF EXISTS favs; DROP TABLE IF EXISTS obavestenja; DROP TABLE IF EXISTS najave; DROP TABLE IF EXISTS kalendar; " );
 
@@ -331,14 +376,15 @@ public class MainActivity extends FragmentActivity
         int fragCurnum = 0;
         fragCurnum = (getActionBar().getSelectedTab().getPosition() == 0) ? 2 : 3;
 
-        for(int i=0; i < fragCurnum; i++)
+        for(int i=0; i < fragCurnum; i++) // prodji kroz sve, [trenutne] fragmente u memoriji
         {
-            MainFragment mf = (MainFragment)((CollectionPagerAdapter)mViewPager.getAdapter()).getItem(i);
-            mf.mNum=i;
+            // instanciraj nove fragmente i setuj ih
+            MainFragment mf = (MainFragment) ((CollectionPagerAdapter) mViewPager.getAdapter()).getItem(i);
+            mf.mNum = i;
             mf.local = this;
-            mf.reFresh();
+            // refresh sadrzaja
+            mf.reFresh(); //TODO:  IMA LI BOLJA OPCIJA ??? nesto direktinije ?
         }
-
         Toast.makeText(this, "Refrash", Toast.LENGTH_SHORT).show();
     }
 

@@ -2,6 +2,7 @@ package com.example.mastermind.praktikumandroid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.List;
 
 
 /**
- * Created by Mastermind on 15-Jun-15.
+ * Created by Mastermind on 11-Jan-17.
  */
 public class MainScreenAdapter extends ArrayAdapter<FeedEntry> {
 
@@ -106,7 +107,10 @@ public class MainScreenAdapter extends ArrayAdapter<FeedEntry> {
 
 
 
-        int tab = ((MainActivity)context).getActionBar().getSelectedTab().getPosition();
+        //int tab = 0;//((MainActivity)context).getActionBar().getSelectedTab().getPosition();
+        // NE RADI !!!! int tab = ((AppCompatActivity)context).getSupportActionBar().getSelectedTab().getPosition();
+
+        int tab = MainActivity.tabLayoutMain.getSelectedTabPosition();
 
         ImageButton imgButton = (ImageButton) view.findViewById(R.id.imgButton);
         imgButton.setClickable(true);

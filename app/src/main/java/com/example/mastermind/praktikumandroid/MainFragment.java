@@ -179,7 +179,7 @@ public class MainFragment extends ListFragment {
     public void clearFavsList()
     {   favsLocal_DB_ITEMS.clear();}
 
-    public void reFresh()
+    public void reFresh() //TODO: videti sta s ovim
     {
         Activity l = getActivity();
         if(local==null)

@@ -2,7 +2,7 @@ package com.example.mastermind.praktikumandroid.conn;
 
 import android.os.AsyncTask;
 
-import org.apache.http.NameValuePair;
+//import org.apache.http.NameValuePair;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

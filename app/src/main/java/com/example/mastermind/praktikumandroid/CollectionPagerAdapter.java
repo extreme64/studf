@@ -19,7 +19,8 @@ import java.util.Map;
 import android.util.SparseArray;
 
 /**
- * Created by Mastermind on 25-Jun-15.
+ * Menadzer svih frqagmenata
+ * Koristi ga mViewPager kao svoj adapter
  */
 // Since this is an object collection, use a FragmentStatePagerAdapter,
 // and NOT a FragmentPagerAdapter.
@@ -39,6 +40,14 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
         mFragmentManager = fm;
         //mFragmentTags = new HashMap<Integer, String>();
     }
+
+    /* TB. */
+    public CollectionPagerAdapter(FragmentManager fm, int numOfTabs) {
+        super(fm);
+        mFragmentManager = fm;
+        this.NUM_ITEMS = numOfTabs;
+    }
+
 
     public int getNUM_PAGES() { return this.getCount(); }
     public void setNUM_PAGES(int num_pages) {
