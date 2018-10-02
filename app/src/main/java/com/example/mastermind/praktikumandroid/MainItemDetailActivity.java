@@ -8,6 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -19,7 +23,7 @@ import android.widget.Toast;
  * <p/>
  * This activity is mostly just a 'shell' activity containing nothing more than a {@link MainItemDetailFragment}.
  */
-public class MainItemDetailActivity extends FragmentActivity {
+public class MainItemDetailActivity extends AppCompatActivity {  //FragmentActivity
 
 
     SQLiteDatabase lDB;
@@ -29,8 +33,20 @@ public class MainItemDetailActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
 
-        // Show the Up button in the action bar.
-       //getSupportActionBar().setDisplayHomeAsUpEnabled(true); izmena 1
+
+
+
+        //get toolbar view to get ref.
+        Toolbar toolbar_main = (Toolbar) findViewById(R.id.toolbarMain);
+        //set toolbar_main to act as actionbar
+        setSupportActionBar(toolbar_main);
+
+        // options for toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+
 
         // savedInstanceState is non-null when there is fragment state saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape). In this case, the fragment will automatically be re-added
@@ -55,31 +71,63 @@ public class MainItemDetailActivity extends FragmentActivity {
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+
+
+        if(MainItemDetailFragment.tw_prosecnaOcenaDetalji!= null)
+        {
+            MainItemDetailFragment.tw_prosecnaOcenaDetalji.setText(MainFragment.PROSEK+"");
+        }
+
     }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                Toast.makeText(this, R.string.authorInfoStr, Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
 
-            navigateUpTo(new Intent(this, MainActivity.class));
-            return true;
+                startActivity(settingsIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
+
+
 
     /** otvaranje linka stavke fida,
      * klik na dugme u detaljnom prikazu (frag.)
      */
     public void item_goto_url(View v)
     {
-        String url=((FeedEntry)v.getTag()).url;
-        if (!url.startsWith("https://") && !url.startsWith("http://"))
-            url = "http://" + url;
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        Object tagObj = v.getTag();
+        if(tagObj != null) {
+            String url = ((FeedEntry) tagObj).url;
+            if (!url.startsWith("https://") && !url.startsWith("http://"))
+                url = "http://" + url;
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        }
+        else
+        {
+            Toast.makeText(this, "Link nije dostupan", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -111,6 +159,7 @@ public class MainItemDetailActivity extends FragmentActivity {
         Activity tha = this;
         if(retStat==1)
             Toast.makeText(tha, "Deleted FAV "+arg[0], Toast.LENGTH_LONG).show();
+
         // go back to list activity, pack a TAB index too, to open proper tab
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

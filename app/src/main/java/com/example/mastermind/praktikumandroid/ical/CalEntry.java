@@ -1,7 +1,6 @@
 package com.example.mastermind.praktikumandroid.ical;
 
 import com.example.mastermind.praktikumandroid.Entry;
-import com.example.mastermind.praktikumandroid.ical.ComponentWrap;
 import java.util.Date;
 
 /**
@@ -22,20 +21,7 @@ public class CalEntry extends Entry {
     public String lastmodified;
     public String sequence;
     public String transp;
-/*
-    public String begin;
-    public String end;
-    public String vevent;
-    public String vtodo;
-    public String vjournal;
-    public String vfreebusy;
-    public String vtimezone;
-    public String valarm;
-    public String vavailability;
-    public String vvenue;
-    public String available;
-    public String experimental_prefix;
-*/
+
     public String fromTab="";
 
     public CalEntry(){}
@@ -76,28 +62,9 @@ public class CalEntry extends Entry {
         this.transp = transp;
     }
 
-    public CalEntry(String id, String title, String desc, String url)
-    {
-       /* this.id = id;
-        this.title = title;
-        this.desc =  desc;
-        this.date = new Date();
-        if(url==null)
-            this.url = "";
-        else
-            this.url = url;*/
-    }
-    public CalEntry(String id, String rssItemId, String title, String desc, String content, String url, String creator, String email, String category, Date date, Date dateUpdate)
-    {
-       /* this.id = id;
-        this.title = title;
-        this.desc =  desc;
-        this.date = new Date();
-        if(url==null)
-            this.url = "";
-        else
-            this.url = url;*/
-    }
+    public CalEntry(String id, String title, String desc, String url) {}
+
+    public CalEntry(String id, String rssItemId, String title, String desc, String content, String url, String creator, String email, String category, Date date, Date dateUpdate) {}
 
 
 

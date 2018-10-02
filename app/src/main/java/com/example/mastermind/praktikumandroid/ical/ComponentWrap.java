@@ -38,7 +38,7 @@ public class ComponentWrap extends Component {
         this.properties = cl;
     }
 
-    /* polja iz ove klase */
+
     public Property getDtstart(){return getPropertiesWrap().getProperty(DTSTART);}
     public Property getDtend(){return getPropertiesWrap().getProperty(DTEND);}
     public Property getUID(){return getPropertiesWrap().getProperty(UID);}
@@ -53,7 +53,7 @@ public class ComponentWrap extends Component {
     public Property getTransp(){return getPropertiesWrap().getProperty(TRANSP);}
 
 
-    /* polja nasledjena */
+
     public Property getBegin(){return getPropertiesWrap().getProperty(BEGIN);}
     public Property getEnd(){return getPropertiesWrap().getProperty(END);}
     public Property getVevent(){return getPropertiesWrap().getProperty(VEVENT);}
@@ -77,7 +77,6 @@ public class ComponentWrap extends Component {
 
     @Override
     public void validate(boolean b) throws ValidationException {
-
     }
 }
 

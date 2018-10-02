@@ -1,6 +1,7 @@
 package com.example.mastermind.praktikumandroid.conn;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -17,23 +18,25 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+
+
 /**
  * Created by Mastermind on 20-Jul-16.
  */
 public class CertificateValidation {
 
-    private  CertificateFactory cf;
-    private  InputStream caInput;
+    private CertificateFactory cf;
+    private InputStream caInput;
     private  String keyStoreType;
-    private  KeyStore keyStore;
+    private KeyStore keyStore;
     private  String tmfAlgorithm;
-    private  TrustManagerFactory tmf;
-    public  SSLContext SSLcontext;
+    private TrustManagerFactory tmf;
+    public SSLContext SSLcontext;
     private SSLContext context = null;
 
 
 
-    public CertificateValidation( AssetManager am, String cert_file_path){
+    public CertificateValidation(AssetManager am, String cert_file_path){
 
         CertificateFactory cf = null;
         String keyStoreType = KeyStore.getDefaultType();
@@ -42,25 +45,21 @@ public class CertificateValidation {
         TrustManagerFactory tmf = null;
         SSLContext SSLcontext = null;
 
-        // Load CAs from an InputStream
-        // (could be from a resource or ByteArrayInputStream or ...)
         try {
             cf = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {   e.printStackTrace();  }
 
         InputStream caInput;
-        //FileInputStream inputString = new FileInputStream("ee.txt");
 
         InputStream inputString = null;
         try {
-            inputString = am.open("posta_ssl_skola_b64.crt");
+            inputString = am.open("LetsEncryptAuthorityX3.crt");
         } catch (IOException e) {  e.printStackTrace(); }
 
-        caInput = new BufferedInputStream(inputString); //  file:///android_assets/posta_ssl_skola_b64.crt
+        caInput = new BufferedInputStream(inputString);
         Certificate ca=null;
         try {
             ca = cf.generateCertificate(caInput);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
         }  catch (CertificateException e) {
             try {
                 caInput.close();

@@ -53,17 +53,19 @@ public class RssParseHandler extends DefaultHandler {
         rssItems = new ArrayList();
     }
 
-    // We have an access method which returns a list of items that are read from the RSS feed. This method will be called when parsing is done.
+    // We have an access method which returns a list of items that are read from the RSS feed.
+    // This method will be called when parsing is done.
     public List<FeedEntry> getItems() { return rssItems; }
 
 
-    // The StartElement method creates an empty RssItem object when an item start tag is being processed. When a title or link tag are being processed appropriate indicators are set to true.
+    // The StartElement method creates an empty RssItem object when an item start tag is being processed.
+    // When a title or link tag are being processed appropriate indicators are set to true.
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
 
         if ("item".equals(qName) || "entry".equals(qName)) {
-            //currentItem = new FeedEntry(String.valueOf(br), "", "", "");
+
             currentItem =  new FeedEntry();
             currentItem.setEntryFromRss(String.valueOf(br), "", "", "");
             br++;
@@ -85,7 +87,8 @@ public class RssParseHandler extends DefaultHandler {
     }
 
 
-    // The EndElement method adds the  current RssItem to the list when a closing item tag is processed. It sets appropriate indicators to false -  when title and link closing tags are processed
+    // The EndElement method adds the  current RssItem to the list when a closing item tag is processed.
+    // It sets appropriate indicators to false -  when title and link closing tags are processed
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("item".equals(qName) || "entry".equals(qName)) {
@@ -94,7 +97,7 @@ public class RssParseHandler extends DefaultHandler {
 
 
         }
-        else if ("title".equals(qName)) //&amp;
+        else if ("title".equals(qName))
             parsingTitle = false;
         else if ("link".equals(qName))
             parsingLink = false;
@@ -125,9 +128,7 @@ public class RssParseHandler extends DefaultHandler {
         if (parsingTitle) {
             if (currentItem != null)
                 currentItem.title += new String(ch, start, length);
-                //  +=   je obavezno je prilikom odredjenih karaktera (&quot) dolazi do rasparcavanje,
-                // te se svi karakteri , dok se obradjuje ovaj tag,
-                // moraju spajati da bi se dobio originalni string kao iz falja
+
         } else if (parsingLink) {
             if (currentItem != null) {
                 currentItem.url = new String(ch, start, length);
@@ -139,7 +140,7 @@ public class RssParseHandler extends DefaultHandler {
             }
         }else if (parsingGuid) {
             if (currentItem != null) {
-                String str = "";
+                String str;
                 str = new String(ch, start, length);
                 String[] words = str.split(" ");
                 currentItem.rssItemId = words[0];
@@ -150,7 +151,7 @@ public class RssParseHandler extends DefaultHandler {
                 currentItem.category = new String(ch, start, length);
                 parsingCategory = false;
             }
-        }else if (parsingPubDate) {//
+        }else if (parsingPubDate) {
 
             if (currentItem != null) {
                 String str;
@@ -164,7 +165,7 @@ public class RssParseHandler extends DefaultHandler {
                 catch (ParseException pe) {}
                 parsingPubDate = false;
             }
-        }else if (parsingDcCreator) {//
+        }else if (parsingDcCreator) {
             if (currentItem != null) {
                 String str = "";
                 currentItem.creator = new String(ch, start, length);
@@ -181,7 +182,6 @@ public class RssParseHandler extends DefaultHandler {
 
 
     /** helps */
-
     public String cleanDesc(String str, String patn) {
         Pattern patt = Pattern.compile(patn);// <{1}[a-z,\s]*/?[a-z,\s]*>{1} , "&[a-z]+;+"
         String[] splits = patt.split(str);

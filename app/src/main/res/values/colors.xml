@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#333333</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FFaa66</color>
+    <color name="colorPrimaryDark">#070f01</color> <!-- status bar notifikacije -->
+    <color name="colorPrimary">#060b03</color>
+    <color name="colorAccent">#fdba01</color>
+
+    <color name="color_GlavnaPozadina">#354043</color>
+    <color name="color_GlavnaPozadinaSvetlije1">#424f53</color>
+    <color name="color_GlavnaPozadinaSvetlije2">#506064</color>
+
+    <color name="color_Lista1">#6e7b84</color>
+    <color name="color_ListaText1">#292e31</color>
+    <color name="color_ListaText2">#344448</color>
+
+    <color name="color_btnText1">#bcb8aa</color>
+    <color name="color_btnText1_pressed">#8b887e</color>
 </resources>

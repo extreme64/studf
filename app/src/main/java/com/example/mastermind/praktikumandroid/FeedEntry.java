@@ -36,25 +36,13 @@ public class FeedEntry {
     public String sequence;
     public String transp;
 
-    /*
-        public String begin;
-        public String end;
-        public String vevent;
-        public String vtodo;
-        public String vjournal;
-        public String vfreebusy;
-        public String vtimezone;
-        public String valarm;
-        public String vavailability;
-        public String vvenue;
-        public String available;
-        public String experimental_prefix;
-    */
+
 
     private int flag;
 
 
     public int getFlag() { return flag; }
+
 
     public void setEntryFromICal(ComponentWrap cW)
     {
@@ -126,28 +114,5 @@ public class FeedEntry {
     /* constr */
 
     public FeedEntry() {}
-
-   /* public FeedEntry(String id, String title, String desc,  String url)
-    {
-        this.id = id;
-        this.title = title;
-        this.desc =  desc;
-        this.date = new Date();
-        if(url==null)
-            this.url = "";
-        else
-            this.url = url;
-    }
-    public FeedEntry(String id, String rssItemId, String title, String desc,  String content, String url, String creator, String email, String category, Date date, Date dateUpdate)
-    {
-        this.id = id;
-        this.title = title;
-        this.desc =  desc;
-        this.date = new Date();
-        if(url==null)
-            this.url = "";
-        else
-            this.url = url;
-    }*/
 
 }

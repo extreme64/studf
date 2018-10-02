@@ -1,17 +1,90 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
 
-    <style name="App_TB_Theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="App_TB_Theme" parent="Theme.AppCompat.DayNight.NoActionBar">
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">#cec1ac</item>
+        <item name="android:windowBackground">@color/color_GlavnaPozadina</item>
 
+        <item name="actionOverflowMenuStyle">@style/menuStavke</item>
+
+    </style>
+    <!-- zaglavlje -->
+    <style name="zaglavlje" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#394245</item>
+        <item name="android:padding">2dp</item>
+    </style>
+    <!-- meni stavke -->
+    menuStavke
+    <style name="menuStavke" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:color">#cdc0ab</item>
+        <item name="android:popupBackground">#394245</item>
+    </style>
+
+    <!-- TAB -->
+    <style name="tabovi1" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#394245</item>
+    </style>
+
+    <style name="tabovi2" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#3f4539</item>
+    </style>
+
+    <!-- Liste -->
+    <style name="ListView1" parent="@android:style/Widget.ListView" >
+        <item name="android:background">@color/color_Lista1</item>
+        <item name="android:textColor">@color/color_GlavnaPozadinaSvetlije1</item>
+        <!--<item name="android:listSelector"></item>-->
+    </style>
+
+    <!-- UI -->
+    <style name="UIsp1" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#393f45</item>
+        <item name="android:popupAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
+        <item name="android:popupBackground">#4e565e</item>
+    </style>
+    <style name="UIsp2" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#433945</item>
+        <item name="android:popupAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
+        <item name="android:popupBackground">#524654</item>
+    </style>
+    <style name="UIsp3" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">#aab9bc</item>
+        <item name="android:background">#39453d</item>
+        <item name="android:popupAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
+        <item name="android:popupBackground">#46544b</item>
+    </style>
+
+    <style name="UIbt1" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:textColor">@color/color_btnText1</item>
+        <item name="android:background">@color/color_GlavnaPozadinaSvetlije1</item>
+        <item name="android:popupAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="progressStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:textColor">@color/color_btnText1</item>
+        <item name="android:background">@color/color_GlavnaPozadinaSvetlije1</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 
+
+    <!-- Liste -->
+
+    <!-- Detalji iz liste -->
+
+
+
+    <!-- ++ Settings ++ -->
+
+    <!-- dialog -->
 </resources>

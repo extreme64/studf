@@ -6,6 +6,7 @@ package com.example.mastermind.praktikumandroid;
 public abstract  class Entry {
 
     public String id;
+    public String contentType;
 
     public String getId() {
         return id;

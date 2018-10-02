@@ -22,8 +22,7 @@ import android.util.SparseArray;
  * Menadzer svih frqagmenata
  * Koristi ga mViewPager kao svoj adapter
  */
-// Since this is an object collection, use a FragmentStatePagerAdapter,
-// and NOT a FragmentPagerAdapter.
+
 public class CollectionPagerAdapter extends FragmentStatePagerAdapter
 {
 
@@ -38,7 +37,6 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
     public CollectionPagerAdapter(FragmentManager fm) {
         super(fm);
         mFragmentManager = fm;
-        //mFragmentTags = new HashMap<Integer, String>();
     }
 
     /* TB. */
@@ -94,20 +92,6 @@ public class CollectionPagerAdapter extends FragmentStatePagerAdapter
         }
         return mainf;
     }
-
-
-    
-
-    /* za sada nigde koristeno */
-    public MainFragment getFragment(int key) {
-        return (MainFragment)mPageReferences.get(key);
-    }
-    public int getFragmentsCount()
-    {
-        return mPageReferences.size();
-    }
-
-
 
 
 }

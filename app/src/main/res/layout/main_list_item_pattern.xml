@@ -5,6 +5,8 @@
     android:background="#F7F7EB"
     android:padding="8dp" >
 
+    <!-- OVAJ KORISTIMO u prvim rss !!! -->
+
     <ImageView
         android:id="@+id/ivIco"
         android:layout_width="48dp"
@@ -42,17 +44,17 @@
 
 
         <ImageButton
-            android:onClick="mainList_favIt"
+            android:id="@+id/imgButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="FavIt"
-            android:id="@+id/imgButton"
             android:layout_gravity="right"
             android:clickable="true"
             android:focusable="false"
+            android:onClick="mainList_favIt"
             android:src="@drawable/ic_action_favit"
+            android:text="FavIt"
 
-             />
+            android:visibility="gone" />
 
         <!-- mainList_favIt -->
     </LinearLayout>

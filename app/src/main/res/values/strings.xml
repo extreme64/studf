@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">Diplomski</string>
-    <string name="title_item_detail">Stavka detalji</string>
+    <string name="app_name"></string>
+    <string name="title_item_detail"></string>
     <string name="action_favs">Moje zabeleženo</string>
     <string name="action_settings">Podešavanja</string>
     <string name="action_about">Info o Studentfy</string>
     <string name="strTitlePodesavanja">Podešavanja</string>
+    <string name="authorInfoStr">[PRAKTIKUM ANDROID] Info {  \'Studentfy\' : Adam Gičević 317/13 | IT | Visoka ICT | jul 2015.  }</string>
+
+    <string-array name="predmeti_filt_1">
+        <item index="1" paramvalue="2017" >2017/2018</item>
+        <item index="2" paramvalue="2016" >2016/2017</item>
+        <item index="3" paramvalue="2015" >2015/2016</item>
+    </string-array>
 </resources>

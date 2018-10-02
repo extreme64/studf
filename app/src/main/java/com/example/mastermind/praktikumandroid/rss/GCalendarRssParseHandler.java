@@ -41,26 +41,6 @@ public class GCalendarRssParseHandler extends DefaultHandler{
     private int curLinkPars = 0;
 
 
-    {
-    /*
-        * <entry>
-        *     <id>http://www.google.com/calendar/feeds/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic/53mgifdl7j2n8405srlg4olsps</id>
-        *     <published>2014-09-22T10:55:01.000Z</published>
-        *     <updated>2015-01-04T13:47:14.000Z</updated>
-        *     <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'/>
-        *     <title type='html'>Зимски распуст-први дан</title>
-        *     <summary type='html'>When: Mon Dec 29, 2014&lt;br&gt; &lt;br&gt;Event Status: confirmed</summary>
-              <content type='html'>When: Mon Dec 29, 2014&lt;br /&gt; &lt;br /&gt;Event Status: confirmed</content>
-              <link rel='alternate' type='text/html' href='http://www.google.com/calendar/event?eid=NTNtZ2lmZGw3ajJuODQwNXNybGc0b2xzcHMgaWN0LmVkdS5yc19xaW9naWtyb3Q0Y25zamJ1Z25ucDAyazYwY0Bn' title='alternate'/>
-              <link rel='self' type='application/atom+xml' href='http://www.google.com/calendar/feeds/ict.edu.rs_qiogikrot4cnsjbugnnp02k60c%40group.calendar.google.com/public/basic/53mgifdl7j2n8405srlg4olsps'/>
-              <author>
-                <name>Dušan Stojanovic</name>
-                <email>dule@ict.edu.rs</email>
-              </author>
-         </entry>
-    * */
-    }
-
 
     public GCalendarRssParseHandler() {
         rssItems = new ArrayList();
@@ -120,10 +100,13 @@ public class GCalendarRssParseHandler extends DefaultHandler{
 
     }
 
-    // The EndElement method adds the  current RssItem to the list when a closing item tag is processed. It sets appropriate indicators to false -  when title and link closing tags are processed
+    // The EndElement method adds the  current RssItem to the list when a closing item tag is processed.
+    // It sets appropriate indicators to false -  when title and link closing tags are processed
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if(proceedToParsing) { // no feed staff no more, parse rest
+
+        // no feed staff no more, parse rest
+        if(proceedToParsing) {
             if ("entry".equals(qName)) {
                 rssItems.add(currentItem);
                 currentItem = null;
@@ -156,39 +139,36 @@ public class GCalendarRssParseHandler extends DefaultHandler{
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (parsingTitle) { //
+        if (parsingTitle) {
             if (currentItem != null)
                 currentItem.title = new String(ch, start, length);
-        } else if (parsingLink) { //
-            /*if (currentItem != null) {
-                currentItem.url = this.attrUrl; //currElement_attrLocal.getValue("href");
-                parsingLink = false;
-            }*/
-        }else if (parsingSummary) { //
+        } else if (parsingLink) {
+
+        }else if (parsingSummary) {
             if (currentItem != null) {
                 currentItem.desc = new String(ch, start, length);
                 parsingSummary = false;
             }
-        }else if (parsingContent) { //
+        }else if (parsingContent) {
             if (currentItem != null) {
                 currentItem.content = new String(ch, start, length);
                 parsingContent = false;
             }
         }else if (parsingGuid) {
-            if (currentItem != null) { //
+            if (currentItem != null) {
                 String str = new String(ch, start, length);
                 String[] words = str.split("/");
                 currentItem.rssItemId = words[words.length-1];
                 parsingGuid = false;
             }
-        }else if (parsingCategory) { //
+        }else if (parsingCategory) {
             if (currentItem != null) {
                 String c = currElement_attrLocal.getValue("term");
                 String[] words = c.split("#");
                 currentItem.category = words[1];
                 parsingCategory = false;
             }
-        }else if (parsingPublished) {//
+        }else if (parsingPublished) {
 
             if (currentItem != null) {
                 String str = new String(ch, start, length);
@@ -199,12 +179,12 @@ public class GCalendarRssParseHandler extends DefaultHandler{
                 } catch (ParseException pe) {}
                 parsingPublished = false;
             }
-        }else if (parsingName) { //
+        }else if (parsingName) {
             if (currentItem != null) {
                 currentItem.creator = new String(ch, start, length);
                 parsingName = false;
             }
-        }else if (parsingEmail) { //
+        }else if (parsingEmail) {
             if (currentItem != null) {
                 currentItem.email = new String(ch, start, length);
                 parsingEmail = false;

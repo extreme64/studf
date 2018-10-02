@@ -30,7 +30,7 @@ import org.xml.sax.XMLReader;
 public class RssReader {
 
     Activity activity;
-    // Our class has an attribute which represents RSS Feed URL
+    // class has an attribute which represents RSS Feed URL
     private String rssUrl;
     private String TAG = "RSSReader";
     private int handlerFlag = 1;
@@ -68,10 +68,12 @@ public class RssReader {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser mSaxParser = factory.newSAXParser();
-            XMLReader mXmlReader = mSaxParser.getXMLReader();
 
+            XMLReader mXmlReader = mSaxParser.getXMLReader();
             RssParseHandler handler = new RssParseHandler();
             mXmlReader.setContentHandler(handler);
+
+
             InputStream mInputStream = new URL(rssUrl).openStream();
             Reader reader = new InputStreamReader(mInputStream,"UTF-8");
 
@@ -79,7 +81,7 @@ public class RssReader {
             is.setEncoding("UTF-8");
 
 
-            mXmlReader.parse(is);//new InputSource(mInputStream));
+            mXmlReader.parse(is);
             localItemsreturn = handler.getItems();
 
         } catch (Exception e) {

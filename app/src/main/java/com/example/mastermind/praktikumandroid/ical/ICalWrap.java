@@ -8,12 +8,13 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,66 +24,70 @@ import java.util.List;
 public class ICalWrap {
 
     // List of items parsed
-    private List<FeedEntry> calItems;
-    // We have a local reference to an object which is constructed while parser is working on an item tag
-    // Used to reference item while parsing
-
-
     protected ComponentList calCompsList;
+    private List<FeedEntry> calItems;
 
-
-    public ICalWrap() {
-    }
+    public ICalWrap() {}
 
     public void init(InputStream fin){
 
         calItems = new ArrayList();
-        CalendarBuilder builder = new CalendarBuilder();
-
         Calendar calendar = null;
+        CalendarBuilder builder = new CalendarBuilder();
 
         try {
             calendar = builder.build(fin);
-            PropertyList cPropList = calendar.getProperties();
-
-            for (Iterator pp = cPropList.iterator(); pp.hasNext();) {
-                Property pr = (Property) pp.next();
-                System.out.println("PR >>>>>>>>>> [" + pr.getName() + "] = [" + pr.getValue() + "]");
-            }
-        } catch (ParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        } catch (ParserException e) {e.printStackTrace();}
+        catch (IOException e) {e.printStackTrace();}
 
         calCompsList = calendar.getComponents();
 
+
+        boolean obraditiProslu = false;
         for (Iterator i = calCompsList.iterator(); i.hasNext();) {
             Component component = (Component) i.next();
             ComponentWrap cW = new ComponentWrap(component.getName(), component.getProperties());
-            //System.out.println("SIZE  [" + calendar.getComponents().size() + "]");
+
             try {
 
-                System.out.println("Component [" + component.getName() + "]");
-                /* alternativa A */
-                /*  System.out.println("Property [" + cW.getDtstart().getName() + ", " + cW.getDtstart().getValue() + "]");
-                System.out.println("Property [" + cW.getDtend().getName() + ", " + cW.getDtend().getValue() + "]");
-                */
+                // uzimamo datum starit iz URL kalendara
+                String d = (cW.getDtstart().getValue()).substring(0,4);
+                String fd = (cW.getDtstart().getValue()).substring(0,8);
+                SimpleDateFormat formatCalDTStamp = new SimpleDateFormat("yyyyMMdd");
+                Date datumCalURL = formatCalDTStamp.parse(  fd );
+                java.util.Calendar cal = new GregorianCalendar();
+                cal.setTime(datumCalURL);
+                int mesecICal = cal.get(java.util.Calendar.MONTH);
+                int godinaICal = cal.get(java.util.Calendar.YEAR);
 
-                /**TODO: sada formirati niz koji je izvor adaptera liste za tab koji prikazuje kalendar */
+                // odredjujemo trenutni datum i opsec koliko mesec pre i posle njega
+                // da smatramo potrebnim za korisnika
+                int mesecMin;
+                int mesecMax;
+                java.util.Calendar calSada = new GregorianCalendar();
+                int opseg = 4;
+                int trenutniMesec = calSada.get(java.util.Calendar.MONTH);
+                int trenutnaGodina = calSada.get(java.util.Calendar.YEAR);
+                java.util.Calendar calMax = calSada;
+                calMax.add(java.util.Calendar.MONTH, 4);
+                int mesecMaksimum = calMax.get(java.util.Calendar.MONTH);
+
+
+                // ako opsecu sve okej, ako ne prekini popunu liste
+                if( godinaICal == trenutnaGodina && (mesecICal >= trenutniMesec &&  mesecICal <= mesecMaksimum) ) {
+                    obraditiProslu = true; // bug patch - 2017 u listi pre 2018
+                }
+                else if(obraditiProslu && (godinaICal == trenutnaGodina-1 && (mesecICal >= 9)) ) {
+                }
+                else {
+                    continue;
+                }
+
+                // popuna liste trenutnom stavkom
                 FeedEntry locTmp = new FeedEntry();
                 locTmp.setEntryFromICal(cW);
                 calItems.add(locTmp);
 
-
-                /* alternativa B za dobijanje polja */
-                /*System.out.println("Izlistaj sve iz cW.getPropertiesWrap() ///////////////////// ");
-                for (Iterator j = cW.getPropertiesWrap().iterator(); j.hasNext(); ) {
-                    //vratiti nazad obican ne kastovan objekat
-                    property = (Property) j.next();
-                    System.out.println("Property [" + property.getName() + ", " + property.getValue() + "]");
-                }*/
             }catch (Exception e){}
         }
 

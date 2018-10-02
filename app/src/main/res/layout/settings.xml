@@ -1,96 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    style="@style/App_TB_Theme"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    style="@style/Base.TextAppearance.AppCompat">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Podešavanja"
         android:id="@+id/twPodesavanjaTitle"
+        style="@style/zaglavlje"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_weight="0.02"
         android:gravity="top"
         android:padding="5dp"
-        style="@style/Base.TextAppearance.AppCompat" />
+        android:text="Podešavanja"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="18sp" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="31dp"
         android:layout_gravity="top"
         android:layout_marginBottom="10dp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/twLogovanje"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Auto-provera"
-        android:id="@+id/twAutoProveraSekcija"
         android:layout_weight="0.02"
-        android:phoneNumber="false"
         android:padding="5dp"
         android:paddingLeft="10dp"
-        style="@style/Base.TextAppearance.AppCompat" />
+        android:phoneNumber="false"
+        android:text="Logovanje"
+
+        android:textColor="?android:attr/colorActivatedHighlight" />
+
+    <EditText
+        android:id="@+id/et_mejlLogovanje"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:ems="10"
+        android:hint="Uneti mejl"
+        android:paddingTop="10dp"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/color_GlavnaPozadinaSvetlije2"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/et_lozinkaLogovanje"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:ems="10"
+        android:hint="Lozinka"
+        android:paddingTop="10dp"
+        android:inputType="textPassword"
+        android:textColor="@color/color_GlavnaPozadinaSvetlije2"
+        android:textSize="16sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_gravity="top"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.02" />
+
+    <TextView
+        android:id="@+id/twAutoProveraSekcija"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:padding="5dp"
+        android:paddingLeft="10dp"
+        android:phoneNumber="false"
+        android:text="Notifikacije"
+
+        android:textColor="?android:attr/colorActivatedHighlight" />
 
     <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Uključi servis"
         android:id="@+id/switchAutoProvera"
-        android:clickable="true"
-        android:checked="true"
-        android:textColor="#ff424242"
-        android:focusable="true"
-        android:enabled="true"
+        android:layout_width="336dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#ffd4dcdf"
         android:buttonTint="#ff42b3ff"
         android:capitalize="words"
-        android:backgroundTint="#ffd4dcdf"
+        android:checked="true"
+        android:clickable="true"
+        android:enabled="true"
+        android:focusable="true"
+        android:hint="Aktivirajte ili deaktivirajte auto proveru"
+        android:longClickable="false"
+        android:onClick="onClk_autoproveraswitch"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
         android:showText="true"
         android:splitTrack="false"
-        android:longClickable="false"
-        android:onClick="onClk_autoproveraswitch"
-        style="@style/Base.TextAppearance.AppCompat.Widget.Switch"
-        android:hint="Aktivirajte ili deaktivirajte auto proveru" />
+        android:text="Servis status"
+        android:textColor="@color/color_btnText1_pressed" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:padding="10dp"
+        android:paddingLeft="10dp"
+        android:phoneNumber="false"
+        android:text="Interval provere ( 1 - 60 min. )"
+        android:textColor="@color/color_btnText1_pressed" />
+
+    <SeekBar
+        android:id="@+id/seekBarAutoProveraInterval"
+        style="@style/UIbt1"
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:indeterminate="false"
+        android:longClickable="true"
+        android:max="3540"
+        android:maxWidth="500dp"
+        android:paddingLeft="10dp"
+        android:paddingStart="20dp"
+        android:paddingTop="0dp"
+        android:progress="1111"
+        android:progressTint="#ffffc836"
+        android:thumbOffset="@android:dimen/app_icon_size"
+        android:thumbTint="#ff33c2ff" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="71dp"
         android:layout_weight="0.02" />
-
-    <TextView
-        style="@style/Base.TextAppearance.AppCompat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Interval provere ( 1 - 60 min. )"
-        android:layout_weight="0.02"
-        android:phoneNumber="false"
-        android:padding="5dp"
-        android:paddingLeft="10dp" />
-
-    <SeekBar
-        android:layout_width="244dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBarAutoProveraInterval"
-        android:clickable="true"
-        android:focusable="true"
-        android:max="3540"
-        android:progress="1111"
-        android:progressTint="#ffffc836"
-        android:paddingTop="0dp"
-        android:paddingLeft="10dp"
-        android:indeterminate="false"
-        android:longClickable="true"
-        android:maxWidth="500dp"
-        android:thumbTint="#ff33c2ff"
-        android:thumbOffset="@android:dimen/app_icon_size"
-        style="@style/Base.TextAppearance.AppCompat"
-        android:paddingStart="20dp"
-        android:layout_gravity="right|top"
-        android:layout_marginRight="20dp" />
 
 </LinearLayout>

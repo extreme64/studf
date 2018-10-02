@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/mlipattern"  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mlipattern"
+    style="@style/ListView1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#F4EBFA"
-    android:padding="8dp" >
+    android:minHeight="90dp"
+    android:padding="0dp">
+
+    <!-- OVAJ KORISTIMO u FAV !!! -->
+
 
     <ImageView
         android:id="@+id/ivIco"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="5dp"
-        android:src="@drawable/ic_action_favbook_dblue"
         android:layout_alignParentLeft="true"
-        />
-    <LinearLayout android:id="@+id/TextBox"
-        android:orientation="vertical"
+        android:padding="5dp"
+        android:src="@drawable/ic_action_favbook_dblue" />
+
+    <LinearLayout
+        android:id="@+id/TextBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:layout_alignParentRight="false"
-        android:layout_marginStart="48dp">
-        <TextView
-            android:id="@+id/tvTitle"
-            android:text="Kolokvijum Strategijski menadzment. Sala 12."
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#555"
-            android:textSize="16dip"
-            />
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivIco"
+        android:orientation="vertical"
+        android:paddingLeft="10dp">
+
         <TextView
             android:id="@+id/tvDate"
-            android:text="11/8/2015 @ 10h"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dip"
-            android:textColor="#BB7711"
-            android:textStyle="bold"
+            android:paddingStart="0dip"
             android:paddingTop="10dip"
-            android:paddingStart="20dip"
-            />
+            android:text=".././.... @ ..h"
+            android:textColor="@color/color_ListaText2"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="... text text text holder ..."
+            android:textColor="@color/color_ListaText1" />
 
 
         <ImageButton
+            android:id="@+id/imgButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="FavIt"
-            android:id="@+id/imgButton"
             android:layout_gravity="right"
             android:clickable="true"
             android:focusable="false"
-            android:src="@drawable/ic_action_unfavit"
             android:onClick="onClk_removeFav_mnAct"
-             />
+            android:src="@drawable/ic_action_unfavit"
+            android:text="Čuvaj"
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

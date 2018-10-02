@@ -1,108 +1,127 @@
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" >
+    android:isScrollContainer="true"
+    android:orientation="vertical"
+    android:scrollbarAlwaysDrawHorizontalTrack="true"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarStyle="insideOverlay"
+    android:scrollbars="horizontal|vertical">
 
-    <LinearLayout
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_width="match_parent" android:layout_height="110dp"
-        android:paddingEnd="5dp"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:paddingEnd="5dp">
+
         <ImageView
             android:id="@+id/item_ico"
-            android:src="@drawable/ic_action_detview"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:padding="20dp"/>
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:padding="20dp"
+            android:src="@drawable/ic_action_detview" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/item_title"
-                android:layout_marginTop="3dp"
-                android:paddingStart="13dp"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:maxHeight="45dp"
+                android:paddingStart="13dp"
+                android:text="rtert45645654"
                 android:textIsSelectable="true"
-                android:textSize="12dp"
-                android:text="rtert45645654" />
+                android:textSize="12dp" />
 
             <ImageButton
                 android:id="@+id/go_www"
-                android:onClick="item_goto_url"
-                android:layout_marginEnd="2dp"
-                android:src="@drawable/ic_action_planet_www"
+                android:layout_width="30dp"
+                android:layout_height="33dp"
                 android:layout_column="1"
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
-
-
-           <!-- <Button
+                android:layout_marginEnd="2dp"
+                android:maxHeight="35dp"
+                android:maxWidth="35dp"
                 android:onClick="item_goto_url"
-                android:id="@+id/item_link"
-                android:layout_marginStart="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:textSize="8dp"
-                android:text="Link" /> -->
+                android:src="@drawable/ic_action_planet_www" />
 
-            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent" android:layout_height="match_parent" android:minHeight="200px"
-        xmlns:android="http://schemas.android.com/apk/res/android" android:paddingBottom="48dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/ListView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="200px"
+        android:orientation="vertical"
+        android:paddingBottom="48dp">
 
         <TextView
             android:id="@+id/item_detail"
-            android:layout_width="match_parent" android:paddingStart="110dp"
-            android:paddingTop="20dp" android:paddingEnd="5dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingEnd="5dp"
+            android:paddingStart="80dp"
+            android:paddingTop="10dp"
+            android:scrollIndicators="right|start|end"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarSize="9dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:soundEffectsEnabled="true"
+            android:text="Opis neki item-a staticki tekst ////"
             android:textAlignment="textStart"
-            android:textSize="11dp"
-            android:text="Opis neki item-a asdasdsdasda asd asd asd \n asdasd asd
-            asd as\n sadasd asd asd asd asd
-            \n sa asd asd sd as d \n  asd  asd as sd s asd \n\n\ asd s s asd \n
-            asdasd asd asd sad \ asd asd asd n\n\ asd as asd asd\ a sd asd as
-             \n sa asd asd sd as d \n  asd  asd as sd s asd \n\n\ asd s s asd \n
-            asdasd asd n\n\n" android:scrollbars="vertical"></TextView>
+            android:textSize="10dp"></TextView>
+
+
+        <TextView
+            android:id="@+id/item_detail2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="5dp"
+            android:paddingStart="85dp"
+            android:paddingTop="10dp"
+            android:scrollbars="vertical"
+            android:text="333.33.2222"
+            android:textAlignment="textStart"
+            android:textSize="9dp"
+            android:visibility="visible"></TextView>
+
     </LinearLayout>
 
     <GridLayout
-        android:theme="@style/AlertDialog.AppCompat"
-        android:layout_gravity="bottom" android:layout_marginTop="-48dp"
-        android:layout_width="match_parent" android:layout_height="@android:dimen/app_icon_size" >
+        android:layout_width="match_parent"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="-48dp"
+        android:theme="@style/AlertDialog.AppCompat">
 
         <ImageButton
             android:id="@+id/onClk_addFav"
-            android:onClick="onClk_addFav_dtlFrag"
-            android:layout_marginEnd="2dp"
-            android:src="@drawable/ic_action_favit"
-            android:layout_column="1"
             android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_height="48dp"
+            android:layout_column="1"
+            android:layout_marginEnd="2dp"
+            android:onClick="onClk_addFav_dtlFrag"
+            android:src="@drawable/ic_action_favit" />
 
         <ImageButton
             android:id="@+id/onClk_removeFav"
-            android:onClick="onClk_removeFav_dtlFrag"
-            android:layout_marginEnd="2dp"
-            android:src="@drawable/ic_action_unfavit"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_column="2"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />
-
-        <!--<ImageButton
             android:layout_marginEnd="2dp"
-            android:src="@drawable/fav_ico_draw"
-            android:layout_column="3"
-            android:layout_width="48dp"
-            android:layout_height="48dp" />-->
+            android:onClick="onClk_removeFav_dtlFrag"
+            android:src="@drawable/ic_action_unfavit" />
+
 
     </GridLayout>
 

@@ -20,6 +20,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    //fix: 'Android Gradle Duplicate files copied in APK META-INF/license.txt'
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+
 }
 
 dependencies {
@@ -39,8 +55,9 @@ dependencies {
     compile files('libs/slf4j-nop-1.6.1.jar')
     compile files('libs/apache-commons-codec-1.4.jar')
 
+    compile files('libs/jsoup-1.11.1.jar')
+
     compile files('libs/org-apache-commons-logging.jar')
     compile files('libs/com.springsource.edu.emory.mathcs.backport_3.1.0.jar')
-
 
 }
